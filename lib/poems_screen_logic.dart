@@ -159,10 +159,12 @@ class PoemsScreenLogic {
   late List<FilePickerResult> _files;
   //TODO if going back gets Null and crashes
   void openLoader() async {
-    _files = (await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['txt'])) as List<FilePickerResult>;
-    if (_files.isNotEmpty) {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['txt'],
+    );
+    if (result != null) {
+      _files = result as List<FilePickerResult>;
       var file = _files.first;
       var fileContent = file.files.first.bytes;
       var fileAsString = String.fromCharCodes(fileContent!);
@@ -180,8 +182,9 @@ class PoemsScreenLogic {
 
         //save the result to the database
       }
+
+      updateListView();
     }
-    updateListView();
   }
 
   void toArchive() {}
