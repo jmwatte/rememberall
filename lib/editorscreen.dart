@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'lyricschanger_base.dart';
+import 'poem_model.dart';
 
 class EditorScreen extends StatelessWidget {
   static const routeName = '/editorscreen';
@@ -11,23 +10,22 @@ class EditorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LyricsTransformer ltf =
-        ModalRoute.of(context)!.settings.arguments as LyricsTransformer;
+    final Poem poem = ModalRoute.of(context)!.settings.arguments as Poem;
     return Scaffold(
         appBar: AppBar(
           title: const Text('edit'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context, ltf.input),
+            onPressed: () => Navigator.pop(context, poem.theText),
             //Navigator.pop(context,ltf)
           ),
           actions: <Widget>[
             IconButton(
                 icon: const Icon(Icons.check_circle),
                 onPressed: () {
-                  ltf.input = contr.text;
+                  poem.theText = contr.text;
                   if (kDebugMode) {
-                    print(ltf.input);
+                    print(poem.theText);
                   }
                 })
           ],
@@ -37,8 +35,9 @@ class EditorScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
                 decoration: const InputDecoration(
-                    helperText: 'title in ALLCAPS. Not in lyrics at the start'),
-                controller: contr..text = ltf.input,
+                    helperText:
+                        'title in ALLCAPS. Not in poem at the firstline'),
+                controller: contr..text = poem.theText,
                 keyboardType: TextInputType.multiline,
                 minLines: 3,
                 maxLines: null)));

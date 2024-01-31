@@ -4,13 +4,15 @@ import 'package:diacritic/diacritic.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:rememberall/databasehelper.dart';
+import 'package:rememberall2/databasehelper.dart';
+import 'package:rememberall2/poems_screen_logic.dart';
+import 'package:watch_it/watch_it.dart';
 
-import 'lyricschanger_base.dart';
+import 'poem_model.dart';
 //import 'lyricschanger_base.dart';
 
-class AtoZSlider extends StatefulWidget {
-  final List<LyricsTransformer> items;
+class AtoZSlider extends StatefulWidget with WatchItStatefulWidgetMixin {
+  final List<Poem> poems;
   final Function callbackitemclick;
   final Function callbacksearchchange;
   final Function callbackstarclicked;
@@ -18,22 +20,27 @@ class AtoZSlider extends StatefulWidget {
   final Function callbackDeleteItem;
   final Function callbacklevelchanged;
   final Function callbackcategorychanged;
-  AtoZSlider(
-      this.items,
-      this.callbackitemclick,
-      this.callbacksearchchange,
-      this.callbackstarclicked,
-      this.callbackmoreclicked,
-      this.callbacklevelchanged,
-      this.callbackDeleteItem,
-      this.callbackcategorychanged,
-      {super.key}) {
+  final PoemsScreenLogic logic;
+
+  AtoZSlider({
+    required this.logic,
+    required this.poems,
+    required this.callbackitemclick,
+    required this.callbacksearchchange,
+    required this.callbackstarclicked,
+    required this.callbackmoreclicked,
+    required this.callbacklevelchanged,
+    required this.callbackDeleteItem,
+    required this.callbackcategorychanged,
+    super.key,
+  }) {
     sortOriginalItems();
   }
 
   void sortOriginalItems() {
-    this.items.sort((a, b) => removeDiacritics(a.title().toUpperCase())
-        .compareTo(removeDiacritics(b.title().toUpperCase())));
+    logic.sortOriginalItems();
+    // this.logic.selectedCategorySongs.value.sort((a, b) => removeDiacritics(a.title().toUpperCase())
+    //     .compareTo(removeDiacritics(b.title().toUpperCase())));
   } // prend une liste en param
 
 /*
@@ -49,13 +56,16 @@ class AtoZSlider extends StatefulWidget {
   }
 */ //NOTE: not used
   @override
-  _AtoZSlider createState() => _AtoZSlider();
+  MAtoZSlider createState() => MAtoZSlider();
 }
 
-class _AtoZSlider extends State<AtoZSlider> {
+class MAtoZSlider extends State<AtoZSlider> {
+  var poems = di.get<PoemsScreenLogic>().selectedCategoryPoems;
+  var poemscache = di.get<PoemsScreenLogic>().poemscache;
+  var logic = di.get<PoemsScreenLogic>();
   late double _offsetContainer;
   late double _heightscroller;
-  late List<LyricsTransformer> _itemscache;
+  // late List<LyricsTransformer> _itemscache;
   late String _text;
   late String _searchtext;
   late String _oldtext;
@@ -70,12 +80,21 @@ class _AtoZSlider extends State<AtoZSlider> {
   late ScrollController _scrollController;
   late FocusNode _focusNode;
   late DatabaseHelper databaseHelper = DatabaseHelper();
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   void onscrolllistview() {
     if (!_customscrollisscrolling && _animationcounter == 0) {
-      var indexFirst =
-          ((_scrollController.offset / _itemsizeheight) % _itemscache.length)
-              .floor();
+      var indexFirst = ((_scrollController.offset / _itemsizeheight) %
+              poemscache.value.length)
+          .floor();
       /*if (_scrollController.offset > _lastoffset) //Go downward //NOTE: [TO UNCOMMENT TO ADD THE GOING DOWNWARD CHANGING LETTER] (all block)
       {
         var indexLast =
@@ -93,9 +112,12 @@ class _AtoZSlider extends State<AtoZSlider> {
         }
       } else //Go upward
       {*/
-      var fletter = _itemscache[indexFirst].favourite
+      var fletter = poemscache.value[indexFirst].favourite
           ? '*'
-          : _itemscache[indexFirst].title().toString().toUpperCase()[0];
+          : poemscache.value[indexFirst]
+              .poemTitle()
+              .toString()
+              .toUpperCase()[0];
       var i = _alphabet.indexOf(fletter);
       if (i != -1) {
         setState(() {
@@ -113,16 +135,16 @@ class _AtoZSlider extends State<AtoZSlider> {
       try {
         var esstring = RegExp.escape(text.toLowerCase());
         RegExp regs = RegExp(esstring);
-        _itemscache.clear();
-        List<LyricsTransformer> searchres = [];
-        for (var element in widget.items) {
-          if (regs.hasMatch(element.title().toString().toLowerCase())) {
-            searchres.add(element);
+        List<Poem> searchres = [];
+        for (var poem in poems.value) {
+          if (regs.hasMatch(poem.poemTitle().toString().toLowerCase())) {
+            searchres.add(poem);
           }
         }
-        _itemscache = searchres
-            .where((element) => element.favourite)
-            .followedBy(searchres.where((element) => !element.favourite))
+        // widget.logic.itemscache.value.clear();
+        poemscache.value = searchres
+            .where((poem) => poem.favourite)
+            .followedBy(searchres.where((poem) => !poem.favourite))
             .toList();
 
         setState(() {
@@ -137,7 +159,9 @@ class _AtoZSlider extends State<AtoZSlider> {
       setState(() {
         _searchtext = text;
         //_itemscache = List.from(widget.items);
-        setItemscache();
+        di.get<PoemsScreenLogic>().setPoemsCache();
+
+        //setPoemscache();
       });
     }
   }
@@ -150,16 +174,18 @@ class _AtoZSlider extends State<AtoZSlider> {
     setState(() {
       FocusScope.of(context).requestFocus(FocusNode());
     }); //NOTE: unfocus search when you click on listview
-    for (var i = 0; i < widget.items.length; i++) {
-      if (widget.items[i].id == _itemscache[index].id) {
+    for (var i = 0; i < poems.value.length; i++) {
+      if (poems.value[i].id == poemscache.value[index].id) {
         index = i;
         break;
       }
     }
+    logic.selectedPoem.value = (poems.value[index]);
     widget.callbackitemclick(index);
   }
 
-  void onStarItemClicked(index) {
+  void onStarItemClicked(itemId) {
+    logic.onStarItemClicked(poemscache.value[itemId]);
     // widget.items.where((element) => element.key == index).forEach((element) {
     //  element.favourite = !element.favourite;
     // });
@@ -170,7 +196,7 @@ class _AtoZSlider extends State<AtoZSlider> {
      }
     }
  */
-    widget.callbackstarclicked(index);
+    // widget.callbackstarclicked(itemId);
   }
 
   void onMoreSlideClicked(index) {
@@ -184,7 +210,7 @@ class _AtoZSlider extends State<AtoZSlider> {
               leading: const Icon(Icons.delete),
               title: const Text('Delete'),
               onTap: () {
-                widget.callbackDeleteItem(index);
+                logic.onDeletePoem(index);
                 Navigator.pop(context);
               },
             ),
@@ -193,13 +219,13 @@ class _AtoZSlider extends State<AtoZSlider> {
               title: const Text('Category'),
               onTap: () {
                 Navigator.pop(context);
-                showCategoryDialog(widget.items[index]).then((updatedItem) {
+                showCategoryDialog(poems.value[index]).then((updatedItem) {
                   if (updatedItem != null) {
                     setState(() {
                       //databaseHelper.updatelyric(updatedItem);
                       // updateCategory(updatedItem.id!, updatedItem.category);
-                      widget.callbackmoreclicked(index);
-                      widget.items[index] = updatedItem;
+                      // widget.callbackmoreclicked(index);
+                      poems.value[index] = updatedItem;
                     });
                   }
                 });
@@ -215,9 +241,9 @@ class _AtoZSlider extends State<AtoZSlider> {
     // Implement your delete logic here
   }
 
-  Future<LyricsTransformer?> showCategoryDialog(LyricsTransformer item) async {
-    final categoryController = TextEditingController(text: item.category);
-    return showModalBottomSheet<LyricsTransformer>(
+  Future<Poem?> showCategoryDialog(Poem poem) async {
+    final categoryController = TextEditingController(text: poem.category);
+    return showModalBottomSheet<Poem>(
       context: context,
       builder: (BuildContext context) {
         return Column(
@@ -228,12 +254,12 @@ class _AtoZSlider extends State<AtoZSlider> {
               child: TextField(
                 controller: categoryController,
                 onChanged: (value) {
-                  item.category = value.isNotEmpty ? value : '';
+                  poem.category = value.isNotEmpty ? value : '';
                 },
                 decoration: InputDecoration(
-                  labelText: item.category == null || item.category.isEmpty
+                  labelText: poem.category.isEmpty
                       ? "Enter category"
-                      : "Change ${item.category}",
+                      : "Change ${poem.category}",
                 ),
               ),
             ),
@@ -247,7 +273,7 @@ class _AtoZSlider extends State<AtoZSlider> {
                 //   widget.callbackcategorychanged(item);
                 // });
 
-                Navigator.pop(context, item);
+                Navigator.pop(context, poem);
               },
             ),
           ],
@@ -259,7 +285,7 @@ class _AtoZSlider extends State<AtoZSlider> {
   void updateCategory(int id, String newCategory) {
     // Find the item with the same id
     setState(() {
-      var itemToUpdate = widget.items.firstWhere((element) => element.id == id);
+      var itemToUpdate = poems.value.firstWhere((element) => element.id == id);
 
       // Update the category of the item
       itemToUpdate.category = newCategory;
@@ -271,7 +297,7 @@ class _AtoZSlider extends State<AtoZSlider> {
   @override
   void initState() {
     super.initState();
-    setItemscache(); //NOTE: copy of original items for search
+    setPoemscache(); //NOTE: copy of original items for search
     _customscrollisscrolling = false;
     _offsetContainer = 0.0;
     _animationcounter = 0;
@@ -291,30 +317,65 @@ class _AtoZSlider extends State<AtoZSlider> {
   }
 
   ///try to move the favourites to the top
-  var numOfFav = 0;
-  void setItemscache() {
-    var fav = widget.items.where((i) => i.favourite);
-    numOfFav = fav.length;
-    var notfav = widget.items.where((i) => !i.favourite).toList()
-      ..sort(
-          (a, b) => a.title().toUpperCase().compareTo(b.title().toUpperCase()));
-    //fav.followedBy(notfav);
-    _itemscache = fav.followedBy(notfav).toList();
+  //var numOfFav = 0;
+  void setPoemscache() {
+    di.get<PoemsScreenLogic>().setPoemsCache();
+    // widget.logic.setPoemsCache();
+    // widget.logic.setItemCache();
+    // {
+//     widget.items.sort(
+//         (a, b) => a.title().toUpperCase().compareTo(b.title().toUpperCase()));
+// // Partition items into favorites and non-favorites
+//     var fav = <LyricsTransformer>[];
+//     var notfav = <LyricsTransformer>[];
+//     for (var item in widget.items) {
+//       if (item.favourite) {
+//         fav.add(item);
+//       } else {
+//         notfav.add(item);
+//       }
+//       // }
+
+//       numOfFav = fav.length;
+//       _itemscache = fav.followedBy(notfav).toList();
+//     }
   }
+  //   var fav = widget.items.where((i) => i.favourite);
+  //   numOfFav = fav.length;
+  //   if (numOfFav > 0) {
+  //     fav = fav.toList()
+  //       ..sort((a, b) =>
+  //           a.title().toUpperCase().compareTo(b.title().toUpperCase()));
+
+  //     var notfav = widget.items.where((i) => !i.favourite).toList()
+  //       ..sort((a, b) =>
+  //           a.title().toUpperCase().compareTo(b.title().toUpperCase()));
+  //     //fav.followedBy(notfav);
+  //     _itemscache = fav.followedBy(notfav).toList();
+  //   } else {
+  //     _itemscache = widget.items
+  //       ..sort((a, b) =>
+  //           a.title().toUpperCase().compareTo(b.title().toUpperCase()));
+  //   }
+  // }
 
   bool hasfavourites = false;
   void setUpAlphabet() {
     _alphabet.clear();
-    for (var i = 0; i < _itemscache.length; i++) {
-      if (_itemscache[i].title().toString().trim().isNotEmpty) {
+    for (var i = 0; i < poemscache.value.length; i++) {
+      if (poemscache.value[i].poemTitle().toString().trim().isNotEmpty) {
         var fletter = removeDiacritics(
-            _itemscache[i].title().toString().trim()[0].toUpperCase());
+            poemscache.value[i].poemTitle().toString().trim()[0].toUpperCase());
         if (!_alphabet.contains(fletter)) {
           _alphabet.add(fletter);
         }
       }
     }
-    widget.items.any((element) => element.favourite)
+    di
+            .get<PoemsScreenLogic>()
+            .selectedCategoryPoems
+            .value
+            .any((element) => element.favourite)
         ? hasfavourites = true
         : hasfavourites = false;
     if (kDebugMode) {
@@ -342,11 +403,13 @@ class _AtoZSlider extends State<AtoZSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, contrainsts) {
-      _heightscroller = (contrainsts.biggest.height - _sizefirstitem) /
+    var poemscache = watchValue((PoemsScreenLogic logic) => logic.poemscache);
+    var numOfFav = watchValue((PoemsScreenLogic logic) => logic.numOfFav);
+    return LayoutBuilder(builder: (context, constraints) {
+      _heightscroller = (constraints.biggest.height - _sizefirstitem) /
           _alphabet
               .length; //NOTE: Here the contrainsts.biggest.height is the height of the list (height of body)
-      _sizeheightcontainer = contrainsts.biggest.height -
+      _sizeheightcontainer = constraints.biggest.height -
           _sizefirstitem; //NOTE: Here i'm substracting the size of the container above of the listView
       return Column(children: [
         Container(
@@ -354,12 +417,21 @@ class _AtoZSlider extends State<AtoZSlider> {
             height: _sizefirstitem,
             child: TextField(
               focusNode: _focusNode,
+              controller: _controller,
               onChanged: onsearchtextchange,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                   labelText: "Search",
                   hintText: "Search",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _controller.clear();
+                      onsearchtextchange('');
+                      _scrollController.jumpTo(0.0);
+                    },
+                  ),
+                  border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(6.0)))),
             )),
         GestureDetector(
@@ -374,105 +446,123 @@ class _AtoZSlider extends State<AtoZSlider> {
                   _sizeheightcontainer, //NOTE: Here is were is set the size of the listview
               child: Stack(alignment: Alignment.topRight, children: [
                 //NOTE: Here to add some other components (but you need to remove they height from calcs (line above))
-                ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 28),
-                  itemExtent: _itemsizeheight,
-                  itemCount: _itemscache.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    //NOTE: How you want to generate your items
-                    return GestureDetector(
-                      onTap: () => onItemClick(index),
-                      child: Slidable(
-                        startActionPane: ActionPane(
-                          motion: const DrawerMotion(),
-                          extentRatio: 0.25,
-                          children: [
-                            SlidableAction(
-                              icon: Icons.star,
-                              //make the color red if the iteem is a favourite,
-                              foregroundColor: _itemscache[index].favourite
-                                  ? Colors.green
-                                  : Colors.black,
-                              onPressed: (context) {
-                                setState(() {
-                                  _itemscache[index].favourite =
-                                      !_itemscache[index].favourite;
-                                  onStarItemClicked(_itemscache[index].id);
-                                  // setUpAlphabet();
-                                  // setItemscache();
-                                });
-                              },
-                            ),
-                            SlidableAction(
-                              icon: Icons.more_horiz,
-                              onPressed: (context) => onMoreSlideClicked(index),
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          leading: InkWell(
-                            onLongPress: () async {
-                              var a = await showDialog<Color>(
-                                  context: context,
-                                  builder: (context) {
-                                    return SimpleDialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0)),
-                                        title: const Text(
-                                          'level', // Remove the 'const' keyword here
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        children: Constants.levelkleur
-                                            .map((e) => SimpleDialogOption(
-                                                  child: CircleAvatar(
-                                                    backgroundColor: e,
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.pop(context, e);
-                                                  },
-                                                ))
-                                            .toList());
-                                  });
-                              if (a != null) {
-                                _itemscache[index].levelnr =
-                                    Constants.levelkleur.indexOf(a);
-                                onSetLevelColor(_itemscache[index]);
-                              }
-                            },
-                            child: CircleAvatar(
-                              backgroundColor: _itemscache[index].level(),
-                              child: _itemscache[index].favourite
-                                  ? const Icon(Icons.star)
-                                  : null,
-                            ),
-                          ),
-                          title: Text(_itemscache[index].title().toString(),
-                              style: TextStyle(fontSize: _itemfontsize)),
-                          subtitle: Text(
-                            _itemscache[index].lyrics(),
-                            maxLines: 1,
-                            overflow: TextOverflow.fade,
-                          ),
-                        ),
-                      ),
+                StreamBuilder<Object>(
+                    stream: null,
+                    builder: (context, snapshot) {
+                      return ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 28),
+                        itemExtent: _itemsizeheight,
+                        itemCount: poemscache.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          //NOTE: How you want to generate your items
+                          return GestureDetector(
+                            onTap: () => onItemClick(index),
+                            child: Slidable(
+                              startActionPane: ActionPane(
+                                motion: const DrawerMotion(),
+                                extentRatio: 0.25,
+                                children: [
+                                  SlidableAction(
+                                    icon: Icons.star,
+                                    //make the color red if the iteem is a favourite,
+                                    foregroundColor: poemscache[index].favourite
+                                        ? Colors.red
+                                        : Colors.black,
+                                    onPressed: (context) {
+                                      setState(() {
+                                        // _itemscache[index].favourite =
+                                        //     !_itemscache[index].favourite;
+                                        // onStarItemClicked(_itemscache[index].id);
+                                        logic.onStarItemClicked(
+                                            poemscache[index]);
 
-//
-//
-                      ///
-                      ///
-                      ///
-                      ///
-                      ///
-                    );
-                  },
-                ),
+                                        // setUpAlphabet();
+                                        // setItemscache();
+                                      });
+                                    },
+                                  ),
+                                  SlidableAction(
+                                    icon: Icons.more_horiz,
+                                    onPressed: (context) =>
+                                        onMoreSlideClicked(index),
+                                  ),
+                                ],
+                              ),
+                              child: ListTile(
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                leading: InkWell(
+                                  onLongPress: () async {
+                                    var a = await showDialog<Color>(
+                                        context: context,
+                                        builder: (context) {
+                                          return SimpleDialog(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0)),
+                                              title: const Text(
+                                                'level', // Remove the 'const' keyword here
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              children: Constants.levelkleur
+                                                  .map((e) =>
+                                                      SimpleDialogOption(
+                                                        child: CircleAvatar(
+                                                          backgroundColor: e,
+                                                        ),
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context, e);
+                                                        },
+                                                      ))
+                                                  .toList());
+                                        });
+                                    if (a != null) {
+                                      poemscache[index].levelnr =
+                                          Constants.levelkleur.indexOf(a);
+                                      setState(() {
+                                        onSetLevelColor(poemscache[index]);
+                                      });
+                                    }
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: poemscache[index].level(),
+                                    child: poemscache[index].favourite
+                                        ? const Icon(Icons.star)
+                                        : null,
+                                  ),
+                                ),
+                                title: Text(
+                                  poemscache[index].poemTitle().toString(),
+                                  style: TextStyle(fontSize: _itemfontsize),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                subtitle: Text(
+                                  poemscache[index].poemText(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.fade,
+                                ),
+                              ),
+                            ),
+
+                            //
+                            //
+                            ///
+                            ///
+                            ///
+                            ///
+                            ///
+                          );
+                        },
+                      );
+                    }),
                 Visibility(
                   visible: _focusNode.hasFocus ||
                           _searchtext.isNotEmpty ||
-                          _itemscache.length < 10
+                          poemscache.length < 10
                       ? false
                       : true,
                   child: GestureDetector(
@@ -531,15 +621,15 @@ class _AtoZSlider extends State<AtoZSlider> {
                                   .then((x) => {_animationcounter--});
                             } else {
                               for (var i = numOfFav;
-                                  i < _itemscache.length;
+                                  i < poemscache.length;
                                   i++) {
-                                if (_itemscache[i]
-                                        .title()
+                                if (poemscache[i]
+                                        .poemTitle()
                                         .toString()
                                         .trim()
                                         .isNotEmpty &&
-                                    _itemscache[i]
-                                            .title()
+                                    poemscache[i]
+                                            .poemTitle()
                                             .toString()
                                             .trim()
                                             .toUpperCase()[0] ==
@@ -570,13 +660,13 @@ class _AtoZSlider extends State<AtoZSlider> {
     });
   }
 
-  void onSetLevelColor(itemscache) {
-    widget.callbacklevelchanged(itemscache);
+  void onSetLevelColor(poem) {
+    di.get<PoemsScreenLogic>().onLevelChanged(poem);
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('_itemscache', _itemscache));
+    properties.add(DiagnosticsProperty('_itemscache', poemscache.value));
   }
 }

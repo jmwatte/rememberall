@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -24,8 +23,8 @@ class Saver {
     data = data;
     filename = filename;
     final directory = await getExternalStorageDirectory();
-    final lyricsdirectory = Directory('${directory?.path}/lyrics');
-    final file = File('${lyricsdirectory.path}/$filename');
+    final poemsdirectory = Directory('${directory?.path}/lyrics');
+    final file = File('${poemsdirectory.path}/$filename');
     file.createSync(recursive: true);
     await file.writeAsString(data);
 

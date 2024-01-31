@@ -1,17 +1,18 @@
 import 'dart:core';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class Constants {
   static const String add = 'Add';
   static const String blokker = 'Blokker';
+  static const String prefs = 'Prefs';
   static const List<String> choices = <String>[
     blokker,
     font,
     edit,
     delete,
-    add
+    add,
+    prefs
   ];
   static const String delete = 'Delete';
   static const String edit = 'Edit';
@@ -34,24 +35,26 @@ class Constants {
     //rood
   ];
   static const List<String> listChoices = <String>[
-    openTxtForNewLyric,
-    aNewLyric,
+    openTxtForNewPoem,
+    aNewPoem,
     exportAllToTxtFile,
     toArchive,
     reset,
-    category
+    category,
+    usePrefs,
   ];
-  static const String aNewLyric = 'New';
-  static const String openTxtForNewLyric = 'Import';
+  static const String aNewPoem = 'New';
+  static const String openTxtForNewPoem = 'Import';
   static const String exportAllToTxtFile = 'ExportAll';
   static const String toArchive = 'Archiveren';
   static const String reset = 'Reset';
   static const String category = 'Category';
+  static const String usePrefs = 'UsePrefs';
 }
 
 //import 'dart:async'show Future;
 //import 'package:flutter/services.dart'show rootBundle;
-class CutUpSongSheet {
+class CutUpPoemSheet {
 //Future<List> loadSongs() async{
 //return await rootBundle.loadString('assets/songsheets.txt').then((value) => value.split(catchSong));
 //}
@@ -62,7 +65,7 @@ class CutUpSongSheet {
 //return songlist;
 }
 
-var catchSong = RegExp(
+var catchPoem = RegExp(
     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=^[^\s][^.][^a-z\n]*\n+)''',
     multiLine: true);
 
@@ -78,62 +81,103 @@ enum Scramblemethod {
   xForConsonants,
 }
 
-class LyricsTransformer {
+class Poem {
   int? id;
-  String input = "";
+  String theText = "";
   int levelnr = 1;
   bool favourite = false;
   int extraVisibleLetters = 1;
-  int extraVisibleWords = 1;
+  int extraVisibleWordsStart = 1;
+  int extraVisibleWordsEnd = 1;
   Scramblemethod scramble =
       Scramblemethod.xForAll; // Assuming Scramble is an enum
   bool seeEnd = false;
   bool seeStart = false;
+  String blokker = 'x';
   String category = '';
 
   // Constructor
-  LyricsTransformer({
+  Poem({
     this.id,
-    this.input = "",
+    this.theText = "",
     this.levelnr = 1,
     this.favourite = false,
     this.extraVisibleLetters = 1,
-    this.extraVisibleWords = 1,
+    this.extraVisibleWordsStart = 1,
+    this.extraVisibleWordsEnd = 1,
     this.scramble = Scramblemethod.xForAll,
     this.seeEnd = false,
     this.seeStart = false,
+    this.blokker = 'x',
     this.category = '',
   });
-// Convert a lyric object into a Map object
+
+//a method copywith that takesa LyriscTransFormer and a field and a value and returns a new LyricsTransformer with the field set to the value
+  Poem copyWith({
+    int? id,
+    String? input,
+    int? levelnr,
+    bool? favourite,
+    int? extraVisibleLetters,
+    int? extraVisibleWordsStart,
+    int? extraVisibleWordsEnd,
+    Scramblemethod? scramble,
+    bool? seeEnd,
+    bool? seeStart,
+    String? category,
+    String? blokker,
+  }) {
+    return Poem(
+      id: id ?? this.id,
+      theText: input ?? this.theText,
+      levelnr: levelnr ?? this.levelnr,
+      favourite: favourite ?? this.favourite,
+      extraVisibleLetters: extraVisibleLetters ?? this.extraVisibleLetters,
+      extraVisibleWordsStart:
+          extraVisibleWordsStart ?? this.extraVisibleWordsStart,
+      extraVisibleWordsEnd: extraVisibleWordsEnd ?? this.extraVisibleWordsEnd,
+      scramble: scramble ?? this.scramble,
+      seeEnd: seeEnd ?? this.seeEnd,
+      seeStart: seeStart ?? this.seeStart,
+      category: category ?? this.category,
+      blokker: blokker ?? this.blokker,
+    );
+  }
+
+// Convert a Poem object into a Map object
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
     map['id'] = id;
-    map['input'] = input;
+    map['input'] = theText;
     map['levelnr'] = levelnr;
     map['fav'] = favourite ? 1 : 0;
     map['extraletters'] = extraVisibleLetters;
-    map['extrawords'] = extraVisibleWords;
+    map['extrawordsStart'] = extraVisibleWordsStart;
+    map['extrawordsEnd'] = extraVisibleWordsEnd;
     map['scramble'] = scramble.index;
     map['seeend'] = seeEnd ? 1 : 0;
     map['seestart'] = seeStart ? 1 : 0;
     map['category'] = category;
+    map['blokker'] = blokker;
     return map;
   }
 
-  // Extract a lyric object from a Map object
-  LyricsTransformer.fromMapObject(Map<String, dynamic> map) {
+  // Extract a poem object from a Map object
+  Poem.fromMap(Map<String, dynamic> map) {
     id = map['id'];
-    input = map['input'];
+    theText = map['input'];
     favourite = map['fav'] == 1 ? true : false;
     levelnr = map['levelnr'];
     extraVisibleLetters = map['extraletters'];
-    extraVisibleWords = map['extrawords'];
+    extraVisibleWordsStart = map['extrawordsStart'];
+    extraVisibleWordsEnd = map['extrawordsEnd'];
     scramble = Scramblemethod.values[map['scramble']];
     seeEnd = map['seeend'] == 1 ? true : false;
     seeStart = map['seestart'] == 1 ? true : false;
     category = map['category'] ?? '';
+    blokker = map['blokker'] ?? 'x';
   }
-  String blokker = '▒'; // '█'▒;
+  //String blokker = '▒'; // '█'▒;
   //int extraVisibleLetters = 0;
   //nt extraVisibleWords = 0;
   //bool favourite = false;
@@ -154,12 +198,12 @@ class LyricsTransformer {
   var scrambler = RegExp('[a-zA-Z0-9]');
   //bool seeEnd = false;
   //bool seeStart = false;
-  String title() {
-    return input.split('\n')[0];
+  String poemTitle() {
+    return theText.split('\n')[0];
   }
 
-  String lyrics() {
-    return input.split('\n').sublist(1).join('\n');
+  String poemText() {
+    return theText.split('\n').sublist(1).join('\n');
   }
 
   //linetransform changeline;
@@ -178,13 +222,13 @@ class LyricsTransformer {
       default:
         scrambler = regExpForAll;
     }
-    var theLines = lyrics().split('\n');
+    var theLines = poemText().split('\n');
     var res = '';
     for (var y = 0; y < theLines.length; y++) {
       var theWords = theLines[y].split(' ');
       for (var i = 0; i < theWords.length; i++) {
-        if (i <= 0 + extraVisibleWords && seeStart == true ||
-            i >= theWords.length - extraVisibleWords - 1 && seeEnd == true) {
+        if (i < 0 + extraVisibleWordsStart && seeStart == true ||
+            i > theWords.length - extraVisibleWordsEnd - 1 && seeEnd == true) {
           res = '$res${theWords[i]} ';
         } else {
           res =
@@ -198,7 +242,8 @@ class LyricsTransformer {
   }
 }
 
-String testLyrics = '''ACCENTUATE THE POSITIVE
+String testPoem =
+    '''ACCENTUATE THE POSITIVE
 You’ve got to accentuate the positive,
 eliminate the negative.
 Latch on to the affirmative,

@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:rememberall2/poems_screen_logic.dart';
+import 'package:watch_it/watch_it.dart';
 
-class CategoryListScreen extends StatefulWidget {
+class CategoryListScreen extends StatefulWidget
+    with WatchItStatefulWidgetMixin {
   final List<String>
       categories; // Assume this list is populated with categories from the database
   final Function(String, String) onRenameCategory;
   final Function(String) onDeleteCategory;
   // final ValueNotifier<List<String>> categoriesNotifier;
 
-  CategoryListScreen(
-      {Key? key,
+  const CategoryListScreen(
+      {super.key,
       required this.categories,
       required this.onRenameCategory,
-      required this.onDeleteCategory})
+      required this.onDeleteCategory});
   //   : categoriesNotifier = ValueNotifier<List<String>>(categories),
   //   super(key: key)
-  ;
 
   @override
-  _CategoryListScreenState createState() => _CategoryListScreenState();
+  CategoryListScreenState createState() => CategoryListScreenState();
 }
 
-class _CategoryListScreenState extends State<CategoryListScreen> {
+class CategoryListScreenState extends State<CategoryListScreen> {
   //late final ValueNotifier<List<String>> categoriesNotifier;
 
   @override
@@ -49,12 +51,15 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> categories =
+        watchValue((PoemsScreenLogic logic) => logic.categories);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
       ),
       body: ListView.builder(
-        itemCount: widget.categories.length,
+        itemCount: categories.length,
         itemBuilder: (context, index) {
           return Slidable(
               startActionPane: ActionPane(
@@ -91,8 +96,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                                   String newName = controller.text;
                                   if (newName.isNotEmpty) {
                                     // Call the callback function with the old and new names
-                                    renamingCategory(
-                                        widget.categories[index], newName);
+                                    di.get<PoemsScreenLogic>().onRenameCategory(
+                                        categories[index], newName);
                                   }
                                   // Use newName here...
                                   Navigator.of(context).pop();
@@ -135,16 +140,18 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                       );
                       if (confirmDelete) {
                         // Call the callback function with the category to be deleted
-                        deletingCategory(widget.categories[index]);
+                        di
+                            .get<PoemsScreenLogic>()
+                            .onDeleteCategory(categories[index]);
                       }
                     },
                   ),
                 ],
               ),
               child: ListTile(
-                title: Text(widget.categories[index]),
+                title: Text(categories[index]),
                 onTap: () {
-                  Navigator.pop(context, widget.categories[index]);
+                  Navigator.pop(context, categories[index]);
                 },
               ));
         },

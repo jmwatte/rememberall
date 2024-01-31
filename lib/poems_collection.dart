@@ -1,6 +1,6 @@
 import 'dart:core';
 
-var songslist = '''
+var poems = '''
 
   LYRICS FOR SONGSHEETS-FROM  DOCTORUKE.COM
 COPY AND PASTE TO MAKE SONGSHEETS FOR AUDIENCES

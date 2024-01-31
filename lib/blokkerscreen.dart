@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SelectionScreen extends StatelessWidget {
-  final blokkerchoices = 'xX*#¤_¤•□■▄▬○●'.split('');
+  final blokkerchoices = 'xX*#¤_¤•□■▄▬○●=^.'.split('');
 
   SelectionScreen({super.key});
   @override
