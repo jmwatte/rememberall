@@ -10,8 +10,8 @@ class BlokkerScreen extends StatefulWidget {
 }
 
 class BlokkerScreenState extends State<BlokkerScreen> {
-  final blokkerchoicesConsonants = 'xX*#¤_¤•□■▄▬○●=^.'.split('');
-  final blokkerchoicesVowels = '|'.split('');
+  final blokkerchoicesConsonants = '|xXxX*#¤_¤•□■▄▬○●=^.∆ΘΞΠ°'.split('');
+  final blokkerchoicesVowels = 'xX*#¤_¤•□■▄▬○●=^.∆ΘΞΠ°'.split('');
   int selectedConsonantIndex = 0;
   int selectedVowelIndex = 0;
   String selectedConsonant = di.get<PoemScreenLogic>().blokker.value;
