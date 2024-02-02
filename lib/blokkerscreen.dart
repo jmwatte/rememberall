@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class SelectionScreen extends StatelessWidget {
+class BlokkerScreen extends StatelessWidget {
   final blokkerchoices = 'xX*#¤_¤•□■▄▬○●=^.'.split('');
 
-  SelectionScreen({super.key});
+  BlokkerScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
