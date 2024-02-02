@@ -56,8 +56,14 @@ class Constants {
 class CutUpPoemSheet {}
 
 var catchPoem = RegExp(
-    r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
+    r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=(^[^\s][^.][^a-z\n]*\n+))''',
     multiLine: true);
+// var catchPoem = RegExp(
+//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
+//     multiLine: true);
+// var catchPoem = RegExp(
+//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
+//     multiLine: true);
 // var catchPoem = RegExp(
 //     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
 //     multiLine: true);

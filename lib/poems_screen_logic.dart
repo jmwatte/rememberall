@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -65,12 +66,41 @@ class PoemsScreenLogic {
     final stopwatch = Stopwatch()..start();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
-    isFirstRun = true;
-    poems = normalizeLineEndings(poems);
+    //isFirstRun = true;
+    //poems = normalizeLineEndings(poems);
+
+// Check the first 1000 characters for line endings
+    // var sampleContent = poems.substring(0, min(1000, poems.length));
+    // sampleContent = normalizeLineEndings(poems);
+    // print('Number of \\n characters: ${poems.split('\n').length - 1}');
+    // print('Number of \\r characters: ${poems.split('\r').length - 1}');
+    // print("after normalisez");
+    // print('Number of \\n characters: ${poems.split('\n').length - 1}');
+    // print('Number of \\r characters: ${poems.split('\r').length - 1}');
+    // bool usesWindowsLineEndings = sampleContent.contains('\r\n');
+
+    // RegExp catchPoem;
+    // if (usesWindowsLineEndings) {
+    //   catchPoem = RegExp(
+    //       r'''^[^\s][^.][^a-z\r\n]*\r\n+((\r\n|.)*)(?=(^[^\s][^.][^a-z\r\n]*\r\n+))''',
+    //       multiLine: true);
+    // } else {
+    //   catchPoem = RegExp(
+    //       r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+))''',
+    //       multiLine: true);
+    // }
+
+    poems = "$poems\nTHE END";
+    // var results = catchPoem.allMatches(poems).map((m) => m.group(0)).toList();
+
+    // var catchPoem = RegExp(
+    //     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
+    //     multiLine: true);
     if (isFirstRun) {
       firstRunPoemsPieces.addAll(catchPoem
           .allMatches(poems)
-          .map((e) => Poem()..theText = e.group(0)!));
+          .map((e) => Poem()..theText = e.group(0)!)
+          .toList());
       // firstrunsongpieces.sort((a, b) => a.title().compareTo(b.title()));
 
       await databaseHelper.initializeDatabase();

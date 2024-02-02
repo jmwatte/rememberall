@@ -1,6 +1,7 @@
 //import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:rememberall2/blokkerscreen_logic.dart';
 import 'package:rememberall2/poem_screen_logic.dart';
 import 'package:rememberall2/poems_screen_logic.dart';
 import 'package:watch_it/watch_it.dart';
@@ -24,6 +25,7 @@ void main() {
 void setup() {
   di.registerLazySingleton<PoemScreenLogic>(() => PoemScreenLogic());
   di.registerLazySingleton<PoemsScreenLogic>(() => PoemsScreenLogic());
+  di.registerLazySingleton<BlokkerScreenLogic>(() => BlokkerScreenLogic());
 }
 
 class MyApp extends StatelessWidget {

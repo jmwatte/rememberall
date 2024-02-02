@@ -432,6 +432,7 @@ class MyPoemsState extends State<MyPoems> {
   Widget createCategoryWidget() {
     var diLogic = di.get<PoemsScreenLogic>();
     watchValue((PoemsScreenLogic s) => s.selectedCategoryPoems);
+    var tit = watchValue((PoemsScreenLogic s) => s.whatWeGot);
     return diLogic.selectedCategoryPoems.value.isNotEmpty
         ? Container(
             key: Key(diLogic.selectedCategory.value),
@@ -545,12 +546,12 @@ class MyPoemsState extends State<MyPoems> {
                     })
             // ... other callbacks ...
             )
-        : Center(
-            child: ValueListenableBuilder<String>(
-                valueListenable: di.get<PoemsScreenLogic>().whatWeGot,
-                builder: (context, value, child) {
-                  return Text(value);
-                }));
+        : Center(child: Text(tit));
+    // child: ValueListenableBuilder<String>(
+    //     // valueListenable: title,
+    //     // builder: (context, value, child) {
+    //       return Text(value);
+    //     // }));
   }
 //endtest
 

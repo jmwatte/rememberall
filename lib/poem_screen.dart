@@ -210,7 +210,7 @@ class OnePoemSreenState extends State<OnePoemSreen> {
     // Navigator.pop on the Selection Screen.
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BlokkerScreen()),
+      MaterialPageRoute(builder: (context) => const BlokkerScreen()),
     );
     // obtain shared preferences
     //final prefs = await SharedPreferences.getInstance();
@@ -219,10 +219,10 @@ class OnePoemSreenState extends State<OnePoemSreen> {
     if (null != result) {
       // prefs.setString('blokker', result);
       setState(() {
-        di.get<PoemScreenLogic>().blokker.value = result.consonant;
-        di.get<PoemScreenLogic>().blokkerVowel.value = result.vowel;
-        widget.poem.blokker = result.constonant;
-        widget.poem.blokkerVowel = result.vowel;
+        di.get<PoemScreenLogic>().blokker.value = result['consonant'];
+        di.get<PoemScreenLogic>().blokkerVowel.value = result['vowel'];
+        widget.poem.blokker = result['consonant'];
+        widget.poem.blokkerVowel = result['vowel'];
       });
     }
   }

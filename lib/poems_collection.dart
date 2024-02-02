@@ -28,7 +28,7 @@ Where all the treasure of thy lusty days;
 To say, within thine own deep sunken eyes,
 Were an all-eating shame, and thriftless praise.
 How much more praise deserv'd thy beauty's use,
-If thou couldst answer ‘This fair child of mine
+If thou couldst answer 'This fair child of mine
 Shall sum my count, and make my old excuse,'
 Proving his beauty by succession thine!
     This were to be new made when thou art old,
@@ -129,7 +129,7 @@ Strikes each in each by mutual ordering;
 Resembling sire and child and happy mother,
 Who, all in one, one pleasing note do sing:
     Whose speechless song being many, seeming one,
-    Sings this to thee: ‘Thou single wilt prove none.'
+    Sings this to thee: 'Thou single wilt prove none.'
 
 SONNET 9 SHAKESPEARE
 Is it for fear to wet a widow's eye,
@@ -222,10 +222,10 @@ Or say with princes if it shall go well
 By oft predict that I in heaven find:
 But from thine eyes my knowledge I derive,
 And constant stars in them I read such art
-As ‘Truth and beauty shall together thrive,
+As 'Truth and beauty shall together thrive,
 If from thyself, to store thou wouldst convert';
     Or else of thee this I prognosticate:
-    ‘Thy end is truth's and beauty's doom and date.'
+    'Thy end is truth's and beauty's doom and date.'
 
 SONNET 15 SHAKESPEARE
 When I consider everything that grows
@@ -266,7 +266,7 @@ Though yet heaven knows it is but as a tomb
 Which hides your life, and shows not half your parts.
 If I could write the beauty of your eyes,
 And in fresh numbers number all your graces,
-The age to come would say ‘This poet lies;
+The age to come would say 'This poet lies;
 Such heavenly touches ne'er touch'd earthly faces.'
 So should my papers, yellow'd with their age,
 Be scorn'd, like old men of less truth than tongue,
@@ -314,7 +314,7 @@ A woman's gentle heart, but not acquainted
 With shifting change, as is false women's fashion:
 An eye more bright than theirs, less false in rolling,
 Gilding the object whereupon it gazeth;
-A man in hue all ‘hues' in his controlling,
+A man in hue all 'hues' in his controlling,
 Which steals men's eyes and women's souls amazeth.
 And for a woman wert thou first created;
 Till Nature, as she wrought thee, fell a-doting,
@@ -509,7 +509,7 @@ And though they be outstripp'd by every pen,
 Reserve them for my love, not for their rhyme,
 Exceeded by the height of happier men.
 O! then vouchsafe me but this loving thought:
-‘Had my friend's Muse grown with this growing age,
+'Had my friend's Muse grown with this growing age,
 A dearer birth than this his love had brought,
 To march in ranks of better equipage:
     But since he died and poets better prove,
@@ -791,7 +791,7 @@ SONNET 50 SHAKESPEARE
 How heavy do I journey on the way,
 When what I seek, my weary travel's end,
 Doth teach that ease and that repose to say,
-‘Thus far the miles are measured from thy friend!'
+'Thus far the miles are measured from thy friend!'
 The beast that bears me, tired with my woe,
 Plods dully on, to bear that weight in me,
 As if by some instinct the wretch did know
@@ -816,7 +816,7 @@ Then can no horse with my desire keep pace;
 Therefore desire, of perfect'st love being made,
 Shall neigh no dull flesh in his fiery race,
 But love, for love, thus shall excuse my jade:
-    ‘Since from thee going, he went wilful-slow,
+    'Since from thee going, he went wilful-slow,
     Towards thee I'll run, and give him leave to go.'
 
 SONNET 52 SHAKESPEARE
@@ -1353,10 +1353,10 @@ While comments of your praise richly compil'd,
 Reserve their character with golden quill,
 And precious phrase by all the Muses fil'd.
 I think good thoughts, whilst others write good words,
-And like unlettered clerk still cry ‘Amen'
+And like unlettered clerk still cry 'Amen'
 To every hymn that able spirit affords,
 In polish'd form of well-refined pen.
-Hearing you praised, I say ‘'tis so, 'tis true,'
+Hearing you praised, I say ''tis so, 'tis true,'
 And to the most of praise add something more;
 But that is in my thought, whose love to you,
 Though words come hindmost, holds his rank before.
@@ -1610,7 +1610,7 @@ For thy neglect of truth in beauty dy'd?
 Both truth and beauty on my love depends;
 So dost thou too, and therein dignified.
 Make answer Muse: wilt thou not haply say,
-‘Truth needs no colour, with his colour fix'd;
+'Truth needs no colour, with his colour fix'd;
 Beauty no pencil, beauty's truth to lay;
 But best is best, if never intermix'd'?
 Because he needs no praise, wilt thou be dumb?
@@ -1677,8 +1677,8 @@ Kind is my love to-day, to-morrow kind,
 Still constant in a wondrous excellence;
 Therefore my verse to constancy confin'd,
 One thing expressing, leaves out difference.
-‘Fair, kind, and true,' is all my argument,
-‘Fair, kind, and true,' varying to other words;
+'Fair, kind, and true,' is all my argument,
+'Fair, kind, and true,' varying to other words;
 And in this change is my invention spent,
 Three themes in one, which wondrous scope affords.
     Fair, kind, and true, have often liv'd alone,
@@ -1838,7 +1838,7 @@ Creep in 'twixt vows, and change decrees of kings,
 Tan sacred beauty, blunt the sharp'st intents,
 Divert strong minds to the course of altering things;
 Alas! why fearing of Time's tyranny,
-Might I not then say, ‘Now I love you best,'
+Might I not then say, 'Now I love you best,'
 When I was certain o'er incertainty,
 Crowning the present, doubting of the rest?
     Love is a babe, then might I not say so,
@@ -2147,8 +2147,8 @@ So him I lose through my unkind abuse.
     He pays the whole, and yet am I not free.
 
 SONNET 135 SHAKESPEARE
-Whoever hath her wish, thou hast thy ‘Will,'
-And ‘Will' to boot, and ‘Will' in over-plus;
+Whoever hath her wish, thou hast thy 'Will,'
+And 'Will' to boot, and 'Will' in over-plus;
 More than enough am I that vex'd thee still,
 To thy sweet will making addition thus.
 Wilt thou, whose will is large and spacious,
@@ -2157,17 +2157,17 @@ Shall will in others seem right gracious,
 And in my will no fair acceptance shine?
 The sea, all water, yet receives rain still,
 And in abundance addeth to his store;
-So thou, being rich in ‘Will,' add to thy ‘Will'
+So thou, being rich in 'Will,' add to thy 'Will'
 One will of mine, to make thy large will more.
-    Let no unkind ‘No' fair beseechers kill;
-    Think all but one, and me in that one ‘Will.'
+    Let no unkind 'No' fair beseechers kill;
+    Think all but one, and me in that one 'Will.'
 
 SONNET 136 SHAKESPEARE
 If thy soul check thee that I come so near,
-Swear to thy blind soul that I was thy ‘Will',
+Swear to thy blind soul that I was thy 'Will',
 And will, thy soul knows, is admitted there;
 Thus far for love, my love-suit, sweet, fulfil.
-‘Will', will fulfil the treasure of thy love,
+'Will', will fulfil the treasure of thy love,
 Ay, fill it full with wills, and my will one.
 In things of great receipt with ease we prove
 Among a number one is reckon'd none:
@@ -2176,7 +2176,7 @@ Though in thy store's account I one must be;
 For nothing hold me, so it please thee hold
 That nothing me, a something sweet to thee:
     Make but my name thy love, and love that still,
-    And then thou lov'st me for my name is ‘Will.'
+    And then thou lov'st me for my name is 'Will.'
 
 SONNET 137 SHAKESPEARE
 Thou blind fool, Love, what dost thou to mine eyes,
@@ -2288,7 +2288,7 @@ So runn'st thou after that which flies from thee,
 Whilst I thy babe chase thee afar behind;
 But if thou catch thy hope, turn back to me,
 And play the mother's part, kiss me, be kind;
-    So will I pray that thou mayst have thy ‘Will,'
+    So will I pray that thou mayst have thy 'Will,'
     If thou turn back and my loud crying still.
 
 SONNET 144 SHAKESPEARE
@@ -2309,19 +2309,19 @@ I guess one angel in another's hell:
 
 SONNET 145 SHAKESPEARE
 Those lips that Love's own hand did make,
-Breathed forth the sound that said ‘I hate',
+Breathed forth the sound that said 'I hate',
 To me that languish'd for her sake:
 But when she saw my woeful state,
 Straight in her heart did mercy come,
 Chiding that tongue that ever sweet
 Was us'd in giving gentle doom;
 And taught it thus anew to greet;
-‘I hate' she alter'd with an end,
+'I hate' she alter'd with an end,
 That followed it as gentle day,
 Doth follow night, who like a fiend
 From heaven to hell is flown away.
-    ‘I hate', from hate away she threw,
-    And sav'd my life, saying ‘not you'.
+    'I hate', from hate away she threw,
+    And sav'd my life, saying 'not you'.
 
 SONNET 146 SHAKESPEARE
 Poor soul, the centre of my sinful earth,
@@ -2417,7 +2417,7 @@ As his triumphant prize. Proud of this pride,
 He is contented thy poor drudge to be,
 To stand in thy affairs, fall by thy side.
     No want of conscience hold it that I call
-    Her ‘love,' for whose dear love I rise and fall.
+    Her 'love,' for whose dear love I rise and fall.
 
 SONNET 152 SHAKESPEARE
 In loving thee thou know'st I am forsworn,
