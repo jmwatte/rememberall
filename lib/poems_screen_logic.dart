@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +90,7 @@ class PoemsScreenLogic {
         }
       }
       updateListView();
+      categoryHasChangedTo('all');
     }
     if (isDebugMode) {
       if (kDebugMode) {
@@ -96,6 +99,7 @@ class PoemsScreenLogic {
     } //on first run populate the database
 
     updateListView();
+    categoryHasChangedTo('all');
   }
 
   void updateListView() async {
@@ -141,6 +145,7 @@ class PoemsScreenLogic {
     //         .toList(),
     //     category);
     // }
+    setPoemsCache();
   }
 
   void changeFavoriteStatus() {
@@ -156,34 +161,74 @@ class PoemsScreenLogic {
     saver.save('test.txt', archiveInTextFormat);
   }
 
-  late List<FilePickerResult> _files;
-  //TODO if going back gets Null and crashes
+  String normalizeLineEndings(String text) {
+    return text.replaceAll('\r\n', '\n');
+  }
+
   void openLoader() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['txt'],
+      allowMultiple: true,
     );
+
     if (result != null) {
-      _files = result as List<FilePickerResult>;
-      var file = _files.first;
-      var fileContent = file.files.first.bytes;
-      var fileAsString = String.fromCharCodes(fileContent!);
+      List<PlatformFile> files = result.files;
 
-      var poems = catchPoem
-          .allMatches(fileAsString)
-          .map((e) => Poem()..theText = e.group(0)!)
-          .toList();
+      for (var file in files) {
+        if (file.path != null) {
+          var fileContent = await File(file.path!).readAsString();
+          fileContent = normalizeLineEndings(fileContent);
 
-      if (poems.isNotEmpty) {
-        for (var poem in poems) {
-          // Save the song to the database.
-          await databaseHelper.insertPoem(poem);
+          print('=============================');
+          print(fileContent);
+          print('=============================');
+          var catchPoem = RegExp(
+              r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
+              multiLine: true);
+          var results =
+              catchPoem.allMatches(fileContent).map((m) => m.group(0)).toList();
+          print('=================');
+          print(results.join('\n'));
+          print('=================');
+
+          var poemsToImport = catchPoem.allMatches(fileContent).map((e) {
+            var poem = Poem()..favourite = true;
+            poem.theText =
+                e.group(0)!; // Note the change here from group(0) to group(1)
+            return poem;
+          }).toList();
+
+          if (kDebugMode) {
+            poemsToImport.forEach((poem) {
+              print(poem.theText);
+            });
+          }
+
+          // var poemsToImport = catchPoem.allMatches(fileContent);
+          // var p = poemsToImport.map((e) {
+          //   var poem = Poem();
+          //   poem.theText = e.group(0)!;
+          //   return poem;
+          // }).toList();
+          // if (kDebugMode) {
+          //   print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+          //   print(p.first.theText);
+          //   print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+          // }
+          // poemsToImport.forEach((element) {
+          //   print(element.group(0));
+          // });
+          if (poemsToImport.isNotEmpty) {
+            for (var poem in poemsToImport) {
+              // Save the song to the database.
+              await databaseHelper.insertPoem(poem);
+            }
+            // }
+          }
         }
-
-        //save the result to the database
+        updateListView();
       }
-
-      updateListView();
     }
   }
 
@@ -232,13 +277,13 @@ class PoemsScreenLogic {
     updateListView();
   }
 
-  void updatePoem(Poem poem) {
-    databaseHelper.updatePoem(poem);
+  void updatePoem(Poem poem) async {
+    await databaseHelper.updatePoem(poem);
     updateListView();
   }
 
-  void onDeletePoem(Poem poem) {
-    databaseHelper.deletePoemByID(poem.id!);
+  void onDeletePoem(Poem poem) async {
+    await databaseHelper.deletePoemByID(poem.id!);
     updateListView();
   }
 

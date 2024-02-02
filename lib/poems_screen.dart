@@ -429,7 +429,7 @@ class MyPoemsState extends State<MyPoems> {
     // updateListView();
   }
 
-  Widget createCategoryWidget(List<Poem> poems) {
+  Widget createCategoryWidget() {
     var diLogic = di.get<PoemsScreenLogic>();
     return diLogic.selectedCategoryPoems.value.isNotEmpty
         ? Container(
@@ -440,8 +440,8 @@ class MyPoemsState extends State<MyPoems> {
                     valueListenable: diLogic.selectedCategoryPoems,
                     builder: (context, poems, child) {
                       return AtoZSlider(
-                          logic: di.get<PoemsScreenLogic>(),
-                          poems: diLogic.selectedCategoryPoems.value,
+                          // logic: di.get<PoemsScreenLogic>(),
+                          // poems: diLogic.selectedCategoryPoems.value,
                           callbackitemclick: (i) => {
                                 diLogic.selectedPoem.value =
                                     diLogic.selectedCategoryPoems.value[i],
@@ -555,12 +555,12 @@ class MyPoemsState extends State<MyPoems> {
 
   @override
   Widget build(BuildContext context) {
-    var selectedCategoryPoems =
-        watchValue((PoemsScreenLogic s) => s.selectedCategoryPoems);
-
+    //  var selectedCategoryPoems =
+    //    watchValue((PoemsScreenLogic s) => s.selectedCategoryPoems);
+    var titleText = watchValue((PoemsScreenLogic s) => s.appBarTitle);
     return Scaffold(
         appBar: AppBar(
-          title: Text(di.get<PoemsScreenLogic>().appBarTitle.value),
+          title: Text(titleText),
           actions: <Widget>[
             PopupMenuButton<String>(
               onSelected: choiceAction,
@@ -577,7 +577,7 @@ class MyPoemsState extends State<MyPoems> {
         ),
 
         //test
-        body: createCategoryWidget(selectedCategoryPoems)
+        body: createCategoryWidget()
 
         //??
         //  Center(child: Text(logic.openingszinb.value)),

@@ -2,10 +2,6 @@ import 'dart:core';
 
 var poems = '''
 
-  LYRICS FOR SONGSHEETS-FROM  DOCTORUKE.COM
-COPY AND PASTE TO MAKE SONGSHEETS FOR AUDIENCES
-
-
 SONNET 1 SHAKESPEARE 
 From fairest creatures we desire increase,
 That thereby beauty’s rose might never die,

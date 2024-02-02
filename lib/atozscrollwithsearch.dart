@@ -12,7 +12,7 @@ import 'poem_model.dart';
 //import 'lyricschanger_base.dart';
 
 class AtoZSlider extends StatefulWidget with WatchItStatefulWidgetMixin {
-  final List<Poem> poems;
+  // final List<Poem> poems;
   final Function callbackitemclick;
   final Function callbacksearchchange;
   final Function callbackstarclicked;
@@ -20,11 +20,11 @@ class AtoZSlider extends StatefulWidget with WatchItStatefulWidgetMixin {
   final Function callbackDeleteItem;
   final Function callbacklevelchanged;
   final Function callbackcategorychanged;
-  final PoemsScreenLogic logic;
+  // final PoemsScreenLogic logic;
 
   AtoZSlider({
-    required this.logic,
-    required this.poems,
+    // required this.logic,
+    // required this.poems,
     required this.callbackitemclick,
     required this.callbacksearchchange,
     required this.callbackstarclicked,
@@ -34,11 +34,11 @@ class AtoZSlider extends StatefulWidget with WatchItStatefulWidgetMixin {
     required this.callbackcategorychanged,
     super.key,
   }) {
-    sortOriginalItems();
+    // sortOriginalItems();
   }
 
   void sortOriginalItems() {
-    logic.sortOriginalItems();
+    // logic.sortOriginalItems();
     // this.logic.selectedCategorySongs.value.sort((a, b) => removeDiacritics(a.title().toUpperCase())
     //     .compareTo(removeDiacritics(b.title().toUpperCase())));
   } // prend une liste en param
@@ -210,7 +210,9 @@ class MAtoZSlider extends State<AtoZSlider> {
               leading: const Icon(Icons.delete),
               title: const Text('Delete'),
               onTap: () {
-                logic.onDeletePoem(index);
+                setState(() {
+                  logic.onDeletePoem(poemscache.value[index]);
+                });
                 Navigator.pop(context);
               },
             ),
@@ -219,13 +221,13 @@ class MAtoZSlider extends State<AtoZSlider> {
               title: const Text('Category'),
               onTap: () {
                 Navigator.pop(context);
-                showCategoryDialog(poems.value[index]).then((updatedItem) {
+                showCategoryDialog(poemscache.value[index]).then((updatedItem) {
                   if (updatedItem != null) {
                     setState(() {
                       //databaseHelper.updatelyric(updatedItem);
                       // updateCategory(updatedItem.id!, updatedItem.category);
                       // widget.callbackmoreclicked(index);
-                      poems.value[index] = updatedItem;
+                      poemscache.value[index] = updatedItem;
                     });
                   }
                 });
@@ -403,6 +405,8 @@ class MAtoZSlider extends State<AtoZSlider> {
 
   @override
   Widget build(BuildContext context) {
+    var poems =
+        watchValue((PoemsScreenLogic logic) => logic.selectedCategoryPoems);
     var poemscache = watchValue((PoemsScreenLogic logic) => logic.poemscache);
     var numOfFav = watchValue((PoemsScreenLogic logic) => logic.numOfFav);
     return LayoutBuilder(builder: (context, constraints) {

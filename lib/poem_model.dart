@@ -66,8 +66,32 @@ class CutUpPoemSheet {
 }
 
 var catchPoem = RegExp(
-    r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=^[^\s][^.][^a-z\n]*\n+)''',
+    r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
     multiLine: true);
+// var catchPoem = RegExp(
+//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
+//     multiLine: true);
+// var catchPoem = RegExp(
+//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=^[^\s][^.][^a-z\n]*\n+)''',
+//     multiLine: true);
+// var catchPoem =
+//     RegExp(r'''^(.*?[A-Z]+\n)((.|\n)*?)(?=\n.*?[A-Z]+\n|$)''', multiLine: true);
+// var catchPoem = RegExp(r'''^(.*?[A-Z]+\n)((.|\n)*?)(?=\n\n.*?[A-Z]+\n|\Z)''',
+//     multiLine: true);
+// var catchPoem = RegExp(r'''(.*?[A-Z]+\n)((.|\n)*?)(?=(\n.*?[A-Z]+\n)|\Z)''',
+//     multiLine: true);
+// var catchPoem = RegExp(
+//     r'''(^[A-Z\s:\n!?,.0-9()]+)((.|\n)*?)(?=(\n[A-Z\s:\n!?,.0-9()]+)|\Z)''',
+//     multiLine: true);
+// var catchPoem = RegExp(
+//     r'''(^[\sA-Z!?,.0-9():]+\n)((.|\n)*?)(?=\n[\sA-Z!?,.0-9():]+\n|$)''',
+//     multiLine: true);
+// var catchPoem = RegExp(
+//     r'''(^[\sA-Z!?,.0-9():]+\n)((.|\n)*?)(?=(\n[\sA-Z!?,.0-9():]+\n|$))''',
+//     multiLine: true);
+// var catchPoem =
+//     RegExp(r'''(?!^\n)(^[^a-z].*$\n[\s|\S]*?(?=[A-Z]|\z))''', multiLine: true);
+//var catchPoem = RegExp(r'''(?<=\*)([\s\S]*)(?=\*|\z)''', multiLine: true);
 
 /* RegExp catchSong = RegExp(
     r'''(?<=(\n\s*\n\s*))^[A-Z0-9(][^a-z]{2}.+((?:\n|.)*?)(?=($(?![\r\n]))|(\n\s*\n\s*)[A-Z0-9(][^a-z]{2}(.|\n+))''',
@@ -242,13 +266,12 @@ class Poem {
   }
 }
 
-String testPoem =
-    '''ACCENTUATE THE POSITIVE
-You’ve got to accentuate the positive,
+String testPoem = '''ACCENTUATE THE POSITIVE
+You've got to accentuate the positive,
 eliminate the negative.
 Latch on to the affirmative,
-don’t mess with Mr. In Between.
-You’ve got to spread joy up to the maximum,
+don't mess with Mr. In Between.
+You've got to spread joy up to the maximum,
 bring gloom down to the minimum.
 Have faith or pandemonium
 liable to walk upon the scene.
