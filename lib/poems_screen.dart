@@ -431,6 +431,7 @@ class MyPoemsState extends State<MyPoems> {
 
   Widget createCategoryWidget() {
     var diLogic = di.get<PoemsScreenLogic>();
+    watchValue((PoemsScreenLogic s) => s.selectedCategoryPoems);
     return diLogic.selectedCategoryPoems.value.isNotEmpty
         ? Container(
             key: Key(diLogic.selectedCategory.value),
