@@ -21,6 +21,7 @@ class PoemScreenLogic extends ChangeNotifier {
   final cycler = ValueNotifier<int>(0);
   final cycleColor = ValueNotifier<Color>(Colors.black);
   final blokker = ValueNotifier<String>('x');
+  final blokkerVowel = ValueNotifier<String>('x');
   final poemId = ValueNotifier<int>(0);
   final scrambleMethod = ValueNotifier<Scramblemethod>(Scramblemethod.xForAll);
   bool _useSharedPrefs = false;
@@ -73,6 +74,7 @@ class PoemScreenLogic extends ChangeNotifier {
       counterStart.value = value.getInt('counterStart') ?? 0;
       counterEnd.value = value.getInt('counterEnd') ?? 0;
       blokker.value = value.getString('blokker') ?? 'x';
+      blokkerVowel.value = value.getString('blokkerVowel') ?? 'x';
       cycleColor.value = cycleColors[value.getInt('scrambleMethod') ?? 0];
       scrambleMethod.value =
           Scramblemethod.values[value.getInt('scrambleMethod') ?? 0];
@@ -89,6 +91,7 @@ class PoemScreenLogic extends ChangeNotifier {
       value.setInt('counterStart', counterStart.value);
       value.setInt('counterEnd', counterEnd.value);
       value.setString('blokker', blokker.value);
+      value.setString('blokkerVowel', blokkerVowel.value);
       value.setInt('scrambleMethod', scrambleMethod.value.index);
     });
     if (useSharedPrefs) {
@@ -106,6 +109,7 @@ class PoemScreenLogic extends ChangeNotifier {
       extraVisibleWordsEnd: counterEnd.value,
       scramble: scrambleMethod.value,
       blokker: blokker.value,
+      blokkerVowel: blokkerVowel.value,
     );
   }
 
@@ -118,6 +122,7 @@ class PoemScreenLogic extends ChangeNotifier {
     // cycler.value = value.levelnr;
     cycleColor.value = cycleColors[value.scramble.index];
     blokker.value = value.blokker;
+    blokkerVowel.value = value.blokkerVowel;
     scrambleMethod.value = value.scramble;
   }
 
@@ -168,7 +173,16 @@ class PoemScreenLogic extends ChangeNotifier {
           res = '$res${theWords[i]} ';
         } else {
           res =
-              '$res${theWords[i].substring(0, min(toggleVisibilityFirstLetter.value ? 0 : 1, theWords[i].length))}${theWords[i].substring(min(toggleVisibilityFirstLetter.value ? 0 : 1, theWords[i].length)).replaceAll(scrambler, blokker.value)} ';
+              '$res${theWords[i].substring(0, min(toggleVisibilityFirstLetter.value ? 0 : 1, theWords[i].length))}${theWords[i].substring(min(toggleVisibilityFirstLetter.value ? 0 : 1, theWords[i].length)).replaceAllMapped(scrambler, (match) {
+            if ('aeiouAEIOU'.contains(match[0]!)) {
+              return blokkerVowel.value;
+            } else {
+              return blokker.value;
+            }
+          })} ';
+
+          //  res =
+          //     '$res${theWords[i].substring(0, min(toggleVisibilityFirstLetter.value ? 0 : 1, theWords[i].length))}${theWords[i].substring(min(toggleVisibilityFirstLetter.value ? 0 : 1, theWords[i].length)).replaceAll(scrambler, blokker.value)} ';
           // ' ';
         }
       }

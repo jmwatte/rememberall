@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class Constants {
   static const String add = 'Add';
   static const String blokker = 'Blokker';
+  static const String blokkerVowel = 'BlokkerVowel';
   static const String prefs = 'Prefs';
   static const List<String> choices = <String>[
     blokker,
@@ -52,18 +53,7 @@ class Constants {
   static const String usePrefs = 'UsePrefs';
 }
 
-//import 'dart:async'show Future;
-//import 'package:flutter/services.dart'show rootBundle;
-class CutUpPoemSheet {
-//Future<List> loadSongs() async{
-//return await rootBundle.loadString('assets/songsheets.txt').then((value) => value.split(catchSong));
-//}
-//List<String> getsongs(){
-  // List<String> songlist;
-//var songs=loadSongs();
-//songs.then((value) =>songlist= value.split(catchSong));
-//return songlist;
-}
+class CutUpPoemSheet {}
 
 var catchPoem = RegExp(
     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
@@ -118,6 +108,7 @@ class Poem {
   bool seeEnd = false;
   bool seeStart = false;
   String blokker = 'x';
+  String blokkerVowel = '|';
   String category = '';
 
   // Constructor
@@ -133,6 +124,7 @@ class Poem {
     this.seeEnd = false,
     this.seeStart = false,
     this.blokker = 'x',
+    this.blokkerVowel = '|',
     this.category = '',
   });
 
@@ -150,6 +142,7 @@ class Poem {
     bool? seeStart,
     String? category,
     String? blokker,
+    String? blokkerVowel,
   }) {
     return Poem(
       id: id ?? this.id,
@@ -165,6 +158,7 @@ class Poem {
       seeStart: seeStart ?? this.seeStart,
       category: category ?? this.category,
       blokker: blokker ?? this.blokker,
+      blokkerVowel: blokkerVowel ?? this.blokkerVowel,
     );
   }
 
@@ -183,6 +177,7 @@ class Poem {
     map['seestart'] = seeStart ? 1 : 0;
     map['category'] = category;
     map['blokker'] = blokker;
+    map['blokkerVowel'] = blokkerVowel;
     return map;
   }
 
@@ -200,13 +195,9 @@ class Poem {
     seeStart = map['seestart'] == 1 ? true : false;
     category = map['category'] ?? '';
     blokker = map['blokker'] ?? 'x';
+    blokkerVowel = map['blokkerVowel'] ?? '|';
   }
-  //String blokker = '▒'; // '█'▒;
-  //int extraVisibleLetters = 0;
-  //nt extraVisibleWords = 0;
-  //bool favourite = false;
-  //String input;
-  //int id;
+
   late int key;
   //int levelnr;
   Color level() {
@@ -256,7 +247,15 @@ class Poem {
           res = '$res${theWords[i]} ';
         } else {
           res =
-              '$res${theWords[i].substring(0, min(extraVisibleLetters, theWords[i].length))}${theWords[i].substring(min(extraVisibleLetters, theWords[i].length)).replaceAll(scrambler, blokker)} ';
+              '$res${theWords[i].substring(0, min(extraVisibleLetters, theWords[i].length))}${theWords[i].substring(min(extraVisibleLetters, theWords[i].length)).replaceAllMapped(scrambler, (match) {
+            if ('aeiouAEIOU'.contains(match[0]!)) {
+              return blokkerVowel;
+            } else {
+              return blokker;
+            }
+          })} ';
+          //  res =
+          //    '$res${theWords[i].substring(0, min(extraVisibleLetters, theWords[i].length))}${theWords[i].substring(min(extraVisibleLetters, theWords[i].length)).replaceAll(scrambler, blokker)} ';
           // ' ';
         }
       }
@@ -266,7 +265,8 @@ class Poem {
   }
 }
 
-String testPoem = '''ACCENTUATE THE POSITIVE
+String testPoem =
+    '''ACCENTUATE THE POSITIVE
 You've got to accentuate the positive,
 eliminate the negative.
 Latch on to the affirmative,

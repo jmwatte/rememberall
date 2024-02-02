@@ -22,6 +22,8 @@ class DatabaseHelper {
   String colSeestart = 'seestart';
   String colCategory = 'category';
   String colBlokker = 'blokker';
+  String colBlokkerVowel = 'blokkerVowel';
+
   DatabaseHelper._createInstance(); // Named constructor to create instance of DatabaseHelper
 
   factory DatabaseHelper() {
@@ -47,7 +49,7 @@ class DatabaseHelper {
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $poemsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colInput TEXT,$colFavourite INTEGER, $colLevel INTEGER,$colExtraletters INTEGER,$colExtrawordsStart INTEGER,$colExtrawordsEnd INTEGER,$colScramble INTEGER,$colSeeend INTEGER,$colSeestart INTEGER,$colCategory TEXT, $colBlokker TEXT)');
+        'CREATE TABLE $poemsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colInput TEXT,$colFavourite INTEGER, $colLevel INTEGER,$colExtraletters INTEGER,$colExtrawordsStart INTEGER,$colExtrawordsEnd INTEGER,$colScramble INTEGER,$colSeeend INTEGER,$colSeestart INTEGER,$colCategory TEXT, $colBlokker TEXT,$colBlokkerVowel TEXT)');
   }
 
   Future<List<String>> getDistinctCategories() async {
@@ -87,11 +89,7 @@ class DatabaseHelper {
       conflictAlgorithm:
           ConflictAlgorithm.replace, // Use the REPLACE conflict algorithm
     );
-    //var qr = await db
-    //    .rawQuery('SELECT * FROM $lyricTable WHERE $colInput="$linput"');
-    // qr.isEmpty
-    //    ? result = await db.insert(lyricTable, lyric.toMap())
-    //   : result = 2;
+
     if (kDebugMode) {
       print('insertPoem:$result');
     }
@@ -132,13 +130,6 @@ class DatabaseHelper {
     return result;
   }
 
-  // Future<int> updatePoemCompleted(Poem poem) async {
-  //   var db = await database;
-  //   var result = await db.update(poemsTable, poem.toMap(),
-  //       where: '$colId = ?', whereArgs: [poem.id]);
-  //   return result;
-  // }
-
   // Delete Operation: Delete a lyric object from database
   Future<int> deletePoemByID(int id) async {
     var db = await database;
@@ -178,53 +169,4 @@ class DatabaseHelper {
       [categoryName],
     );
   }
-
-  // Get the 'Map List' [ List<Map> ] and convert it to 'lyric List' [ List<lyric> ]
-  // Future<List<Map<String, dynamic>>> getlyricMapListByCategory(
-  //     String category) async {
-  //   Database db = await database;
-  //   var result = await db.rawQuery(
-  //       'SELECT * FROM $poemsTable WHERE $colCategory="$category" order by $colInput ASC');
-  //   return result;
-  // }
-
-/*   Future<List<LyricsTransformer>> getlyricList() async {
-    var lyricMapList = await getlyricMapList(); // Get 'Map List' from database
-    int count =
-        lyricMapList.length; // Count the number of map entries in db table
-
-    List<LyricsTransformer> lyricList = [];
-    // For loop to create a 'lyric List' from a 'Map List'
-    for (int i = 0; i < count; i++) {
-      lyricList.add(LyricsTransformer.fromMapObject(lyricMapList[i]));
-    }
-
-    return lyricList;
-  } */
-
-//   Future<Poem?> getLyric(int id) async {
-//     Database db = await database;
-//     List<Map<String, dynamic>> maps = await db.query(poemsTable,
-//         columns: [
-//           colId,
-//           colInput,
-//           colLevel,
-//           colFavourite,
-//           colExtraletters,
-//           colExtrawordsStart,
-//           colExtrawordsEnd,
-//           colScramble,
-//           colSeeend,
-//           colSeestart,
-//           colCategory,
-//           colBlokker
-//         ],
-//         where: '$colId = ?',
-//         whereArgs: [id]);
-//     if (maps.isNotEmpty) {
-//       return Poem.fromMap(maps.first);
-//     }
-//     return null;
-//   }
-// }
 }

@@ -65,6 +65,8 @@ class PoemsScreenLogic {
     final stopwatch = Stopwatch()..start();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
+    isFirstRun = true;
+    poems = normalizeLineEndings(poems);
     if (isFirstRun) {
       firstRunPoemsPieces.addAll(catchPoem
           .allMatches(poems)

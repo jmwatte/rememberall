@@ -54,13 +54,6 @@ class OnePoemSreenState extends State<OnePoemSreen> {
     setState(() {});
   }
 
-  // _loadBlokker() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     widget.ltf.blokker = (prefs.getString('blokker') ?? "x");
-  //   });
-  // }
-
   void _incrementCounterStart() {
     setState(() {
       _counterStart++;
@@ -226,8 +219,10 @@ class OnePoemSreenState extends State<OnePoemSreen> {
     if (null != result) {
       // prefs.setString('blokker', result);
       setState(() {
-        di.get<PoemScreenLogic>().blokker.value = result;
-        widget.poem.blokker = result;
+        di.get<PoemScreenLogic>().blokker.value = result.consonant;
+        di.get<PoemScreenLogic>().blokkerVowel.value = result.vowel;
+        widget.poem.blokker = result.constonant;
+        widget.poem.blokkerVowel = result.vowel;
       });
     }
   }
