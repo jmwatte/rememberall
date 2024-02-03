@@ -222,38 +222,42 @@ class MAtoZSlider extends State<AtoZSlider> {
     final categoryController = TextEditingController(text: poem.category);
     return showModalBottomSheet<Poem>(
       context: context,
+      isScrollControlled: true, // set this to true to enable this behavior
       builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: categoryController,
-                onChanged: (value) {
-                  poem.category = value.isNotEmpty ? value : '';
-                },
-                decoration: InputDecoration(
-                  labelText: poem.category.isEmpty
-                      ? "Enter category"
-                      : "Change ${poem.category}",
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets, // add this line
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: categoryController,
+                  onChanged: (value) {
+                    poem.category = value.isNotEmpty ? value : '';
+                  },
+                  decoration: InputDecoration(
+                    labelText: poem.category.isEmpty
+                        ? "Enter category"
+                        : "Change ${poem.category}",
+                  ),
                 ),
               ),
-            ),
-            ElevatedButton(
-              child: const Text('Save'),
-              onPressed: () {
-                setState(() {
-                  updateCategory(poem.id!, poem.category);
-                  // Update the category of the item in the database
-                  //databaseHelper.updatelyric(item);
-                  widget.callbackcategorychanged(poem);
-                });
+              ElevatedButton(
+                child: const Text('Save'),
+                onPressed: () {
+                  setState(() {
+                    updateCategory(poem.id!, poem.category);
+                    // Update the category of the item in the database
+                    //databaseHelper.updatelyric(item);
+                    widget.callbackcategorychanged(poem);
+                  });
 
-                Navigator.pop(context, poem);
-              },
-            ),
-          ],
+                  Navigator.pop(context, poem);
+                },
+              ),
+            ],
+          ),
         );
       },
     );
@@ -373,6 +377,7 @@ class MAtoZSlider extends State<AtoZSlider> {
                     onPressed: () {
                       _controller.clear();
                       onsearchtextchange('');
+                      _focusNode.unfocus();
                       _scrollController.jumpTo(0.0);
                     },
                   ),

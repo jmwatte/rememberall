@@ -198,6 +198,7 @@ class PoemsScreenLogic {
     if (poem.toString().isNotEmpty) {
       databaseHelper.insertPoem(Poem()..theText = poem);
       updateListView();
+      categoryHasChangedTo(selectedCategory.value);
       //selectedCategoryPoems.value.add(Poem()..theText = poem);
       //save the result to the database
       // filterList();
@@ -218,6 +219,7 @@ class PoemsScreenLogic {
     }
     databaseHelper.renameCategory(oldName, newName);
     updateListView();
+    categoryHasChangedTo(selectedCategory.value);
   }
 
   void onDeleteCategory(String name) {
@@ -230,16 +232,19 @@ class PoemsScreenLogic {
     }
     databaseHelper.removeCategoryFromDataBase(name);
     updateListView();
+    categoryHasChangedTo(selectedCategory.value);
   }
 
   void onPoemCategoryChanged(Poem poem) {
     databaseHelper.updatePoem(poem);
     updateListView();
+    categoryHasChangedTo(selectedCategory.value);
   }
 
   void updatePoem(Poem poem) async {
     await databaseHelper.updatePoem(poem);
     updateListView();
+    categoryHasChangedTo(selectedCategory.value);
   }
 
   void onDeletePoem(Poem poem) async {
