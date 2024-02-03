@@ -1,3 +1,4 @@
+import 'package:rememberall2/loadingscreen.dart';
 import 'package:rememberall2/poem_screen_logic.dart';
 import 'package:rememberall2/poems_screen_logic.dart';
 import 'package:flutter/foundation.dart';
@@ -224,7 +225,7 @@ class MyPoemsState extends State<MyPoems> {
                     })
             // ... other callbacks ...
             )
-        : Center(child: Text(tit));
+        : Center(child: (LoadingScreen(tit)));
   }
 //endtest
 
