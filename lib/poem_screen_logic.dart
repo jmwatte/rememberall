@@ -54,7 +54,7 @@ class PoemScreenLogic extends ChangeNotifier {
       result = await (Connectivity().checkConnectivity());
     } catch (e) {
       if (kDebugMode) {
-        print("Error: $e");
+        print("in _initConnectivity() Error: $e");
       }
     }
     _updateConnectionStatus(result);

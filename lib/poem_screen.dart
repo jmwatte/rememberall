@@ -96,27 +96,33 @@ class OnePoemSreenState extends State<OnePoemSreen> {
     if (choice == Constants.blokker) {
       _goAndPickTheBlokker(context);
       if (kDebugMode) {
-        print('blokker');
+        print('in handleTheActions() blokker');
       }
     } else if (choice == Constants.font) {
       _goAndSelectTheFont(context);
       if (kDebugMode) {
-        print('font');
+        print('in handleTheActions() font');
       }
     } else if (choice == Constants.edit) {
       _goAndEditThePoem(context, widget.poem);
       if (kDebugMode) {
-        print('edit');
+        print(' in handleTheActions() edit');
       }
     } else if (choice == Constants.aNewPoem) {
       _goAndMakeNewPoem(context);
     } else if (choice == Constants.delete) {
       setState(() {
         helper.deletePoemByID(widget.poem.id!);
+        if (kDebugMode) {
+          print('in handleTheActions() delete');
+        }
       });
       Navigator.pop(context, true);
     } else if (choice == Constants.add) {
       addToDatabase(widget.poem);
+      if (kDebugMode) {
+        print('in handleTheActions() add');
+      }
     } else if (choice == Constants.prefs) {
 //pop up a dialog that lets you choose between use the SharedPrefs or the Prefs from the song
       // pop up a dialog with 2 choices on it
@@ -155,6 +161,9 @@ class OnePoemSreenState extends State<OnePoemSreen> {
               ),
             );
           });
+      if (kDebugMode) {
+        print('in handleTheActions() prefs');
+      }
     }
   }
 
@@ -178,7 +187,7 @@ class OnePoemSreenState extends State<OnePoemSreen> {
             _loadFont();
 
             if (kDebugMode) {
-              print(_selectedFont);
+              print("in _goAndSelectTheFont() selectedFont: $_selectedFont");
             }
           },
         ),
@@ -190,7 +199,7 @@ class OnePoemSreenState extends State<OnePoemSreen> {
     final result = await Navigator.pushNamed(context, EditorScreen.routeName,
         arguments: poem);
     if (kDebugMode) {
-      print('resukltaat:$result');
+      print(' in _goAndEditThePoem() resultaat:$result');
     }
     //update the excisting lyric in the database with the new lyrics
     if (result is String) {

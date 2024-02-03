@@ -45,18 +45,25 @@ class PoemsScreenLogic {
   void categoryHasChangedTo(String category) async {
     final stopwatch = Stopwatch()..start();
 
+    await getPoemsFromCategory(category);
+    setPoemsCache();
     selectedCategory.value = category;
-    if (category == 'all') {
-      selectedCategoryPoems.value = await databaseHelper.getPoemsfromDB();
-    } else {
-      selectedCategoryPoems.value =
-          await databaseHelper.getPoemsByCategory(category);
-    }
 
     if (kDebugMode) {
       print('categoryHasChangedTo() executed in ${stopwatch.elapsed}');
-      // Print the elapsed time in milliseconds
     }
+  }
+
+  Future<void> getPoemsFromCategory(category) async {
+    if (category == 'all') {
+      List<Poem> poems = await databaseHelper.getPoemsfromDB();
+      selectedCategoryPoems.value = List.from(poems);
+    } else {
+      List<Poem> poemsByCategory =
+          await databaseHelper.getPoemsByCategory(category);
+      selectedCategoryPoems.value = List.from(poemsByCategory);
+    }
+    //setPoemsCache();
   }
 
   void loadPoems() async {
@@ -66,42 +73,12 @@ class PoemsScreenLogic {
     final stopwatch = Stopwatch()..start();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
-    //isFirstRun = true;
-    //poems = normalizeLineEndings(poems);
 
-// Check the first 1000 characters for line endings
-    // var sampleContent = poems.substring(0, min(1000, poems.length));
-    // sampleContent = normalizeLineEndings(poems);
-    // print('Number of \\n characters: ${poems.split('\n').length - 1}');
-    // print('Number of \\r characters: ${poems.split('\r').length - 1}');
-    // print("after normalisez");
-    // print('Number of \\n characters: ${poems.split('\n').length - 1}');
-    // print('Number of \\r characters: ${poems.split('\r').length - 1}');
-    // bool usesWindowsLineEndings = sampleContent.contains('\r\n');
-
-    // RegExp catchPoem;
-    // if (usesWindowsLineEndings) {
-    //   catchPoem = RegExp(
-    //       r'''^[^\s][^.][^a-z\r\n]*\r\n+((\r\n|.)*)(?=(^[^\s][^.][^a-z\r\n]*\r\n+))''',
-    //       multiLine: true);
-    // } else {
-    //   catchPoem = RegExp(
-    //       r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+))''',
-    //       multiLine: true);
-    // }
-
-    // var results = catchPoem.allMatches(poems).map((m) => m.group(0)).toList();
-
-    // var catchPoem = RegExp(
-    //     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
-    //     multiLine: true);
     if (isFirstRun) {
+      if (kDebugMode) {
+        print("loadPoems()IsFirstRum = $isFirstRun started");
+      }
       firstRunPoemsPieces.addAll(getPoemsFromString(poems, false));
-      // firstRunPoemsPieces.addAll(catchPoem
-      //     .allMatches(poems)
-      //     .map((e) => Poem()..theText = e.group(0)!)
-      //     .toList());
-      // firstrunsongpieces.sort((a, b) => a.title().compareTo(b.title()));
 
       await databaseHelper.initializeDatabase();
       for (var poem in firstRunPoemsPieces) {
@@ -121,8 +98,8 @@ class PoemsScreenLogic {
           print('loadPoems() finished first run');
         }
       }
-      updateListView();
-      categoryHasChangedTo('all');
+      //updateListView();
+      //categoryHasChangedTo('all');
     }
     if (isDebugMode) {
       if (kDebugMode) {
@@ -141,19 +118,25 @@ class PoemsScreenLogic {
       }
     } // final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     final stopwatch = Stopwatch()..start();
-    var databasePoemsResult = await databaseHelper.getPoemsfromDB();
+    //var databasePoemsResult = await databaseHelper.getPoemsfromDB();
     var allCategories = await databaseHelper.getDistinctCategories();
     // count = databaseLyricsResult.length;
     allCategories.insert(0, 'all');
     categories.value = allCategories; // Ensure 'all' is the first category
-    selectedCategoryPoems.value = List.from(databasePoemsResult);
+    //selectedCategoryPoems.value = List.from(databasePoemsResult);
+    // var categoryPoems = selectedCategory.value == 'all'
+    //     ? databasePoemsResult
+    //     : databasePoemsResult
+    //         .where((poem) => poem.category == selectedCategory.value)
+    //         .toList();
+    // selectedCategoryPoems.value = categoryPoems;
     if (isDebugMode) {
       if (kDebugMode) {
         print('updateListView() executed in ${stopwatch.elapsed}');
       }
     }
 
-    setPoemsCache();
+    //setPoemsCache();
   }
 
   void changeFavoriteStatus() {
@@ -191,6 +174,7 @@ class PoemsScreenLogic {
 
           if (kDebugMode) {
             for (var poem in poemsToImport) {
+              print("in openImporter()");
               print(poem.theText);
             }
           }
@@ -202,8 +186,9 @@ class PoemsScreenLogic {
             }
           }
         }
-        updateListView();
       }
+      updateListView();
+      categoryHasChangedTo('all');
     }
   }
 
@@ -260,6 +245,7 @@ class PoemsScreenLogic {
   void onDeletePoem(Poem poem) async {
     await databaseHelper.deletePoemByID(poem.id!);
     updateListView();
+    categoryHasChangedTo(selectedCategory.value);
   }
 
   void sortOriginalItems() {
@@ -279,9 +265,14 @@ class PoemsScreenLogic {
   }
 
   void setPoemsCache() {
+    if (kDebugMode) {
+      print('setPoemsCache() started');
+    }
+
     final stopwatch = Stopwatch()..start();
     selectedCategoryPoems.value
         .sort((a, b) => a.poemTitle().compareTo(b.poemTitle()));
+
 // Partition items into favorites and non-favorites
     var fav = <Poem>[];
     var notfav = <Poem>[];
@@ -298,7 +289,7 @@ class PoemsScreenLogic {
     poemscache.value = orderedList;
     if (isDebugMode) {
       if (kDebugMode) {
-        print('setItemscache() executed in ${stopwatch.elapsed}');
+        print('setPoemsCache() executed in ${stopwatch.elapsed}');
       }
     }
   }

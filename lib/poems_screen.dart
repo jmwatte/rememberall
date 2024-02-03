@@ -45,7 +45,7 @@ class MyPoemsState extends State<MyPoems> {
     if (choice == Constants.exportAllToTxtFile) {
       di.get<PoemsScreenLogic>().exportAllToTxtFile();
       if (kDebugMode) {
-        print('save');
+        print('in choiceAction exportAllToTxtFile');
       }
     } else if (choice == Constants.importNewPoem) {
       di.get<PoemsScreenLogic>().openImporter();
@@ -53,7 +53,7 @@ class MyPoemsState extends State<MyPoems> {
       di.get<PoemsScreenLogic>().toArchive();
       //  _openeditor(context, widget.ltf);
       if (kDebugMode) {
-        print('archiveren');
+        print('in choiceAction archiveren');
       }
     } else if (choice == Constants.aNewPoem) {
       _openeditor(
@@ -138,7 +138,7 @@ class MyPoemsState extends State<MyPoems> {
         ),
       );
 
-      di.get<PoemsScreenLogic>().updateListView();
+      // di.get<PoemsScreenLogic>().updateListView();
       //endtest
 
       if (result != null) {
@@ -151,7 +151,6 @@ class MyPoemsState extends State<MyPoems> {
   _openeditor(BuildContext context, Poem input) async {
     final result = await Navigator.pushNamed(context, EditorScreen.routeName,
         arguments: input);
-    //aaaprint('resukltaat:' + result.toString());
     if (result is String) {
       di.get<PoemsScreenLogic>().addNewPoem(result);
     }
@@ -193,8 +192,10 @@ class MyPoemsState extends State<MyPoems> {
                                   ),
                                 ),
                               },
-                          callbacksearchchange: (word) =>
-                              {debugPrint("SearchWord: $word")},
+                          callbacksearchchange: (word) => {
+                                debugPrint(
+                                    "in callbackSearchchange Word: $word")
+                              },
                           callbackstarclicked: (i) {
                             debugPrint("starclicked on $i");
                             //TODO is this not the selectedLyric?

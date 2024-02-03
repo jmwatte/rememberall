@@ -25,7 +25,7 @@ class EditorScreen extends StatelessWidget {
                 onPressed: () {
                   poem.theText = contr.text;
                   if (kDebugMode) {
-                    print(poem.theText);
+                    print("in editor)+ ${poem.theText}");
                   }
                 })
           ],

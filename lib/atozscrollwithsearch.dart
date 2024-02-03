@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_this
-
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +7,8 @@ import 'package:rememberall2/poems_screen_logic.dart';
 import 'package:watch_it/watch_it.dart';
 
 import 'poem_model.dart';
-//import 'lyricschanger_base.dart';
 
 class AtoZSlider extends StatefulWidget with WatchItStatefulWidgetMixin {
-  // final List<Poem> poems;
   final Function callbackitemclick;
   final Function callbacksearchchange;
   final Function callbackstarclicked;
@@ -20,11 +16,8 @@ class AtoZSlider extends StatefulWidget with WatchItStatefulWidgetMixin {
   final Function callbackDeleteItem;
   final Function callbacklevelchanged;
   final Function callbackcategorychanged;
-  // final PoemsScreenLogic logic;
 
   AtoZSlider({
-    // required this.logic,
-    // required this.poems,
     required this.callbackitemclick,
     required this.callbacksearchchange,
     required this.callbackstarclicked,
@@ -37,24 +30,6 @@ class AtoZSlider extends StatefulWidget with WatchItStatefulWidgetMixin {
     // sortOriginalItems();
   }
 
-  void sortOriginalItems() {
-    // logic.sortOriginalItems();
-    // this.logic.selectedCategorySongs.value.sort((a, b) => removeDiacritics(a.title().toUpperCase())
-    //     .compareTo(removeDiacritics(b.title().toUpperCase())));
-  } // prend une liste en param
-
-/*
-  void setItems(aca) // to easy set new item
-  {
-    this.items = aca;
-    forceSort();
-  }
-
-  void forceSort() {
-    this.items.sort((a, b) => removeDiacritics(a.toString().toUpperCase())
-        .compareTo(removeDiacritics(b.toString().toUpperCase())));
-  }
-*/ //NOTE: not used
   @override
   MAtoZSlider createState() => MAtoZSlider();
 }
@@ -268,12 +243,12 @@ class MAtoZSlider extends State<AtoZSlider> {
             ElevatedButton(
               child: const Text('Save'),
               onPressed: () {
-                // setState(() {
-                //   updateCategory(item.id, item.category);
-                //   // Update the category of the item in the database
-                //   //databaseHelper.updatelyric(item);
-                //   widget.callbackcategorychanged(item);
-                // });
+                setState(() {
+                  updateCategory(poem.id!, poem.category);
+                  // Update the category of the item in the database
+                  //databaseHelper.updatelyric(item);
+                  widget.callbackcategorychanged(poem);
+                });
 
                 Navigator.pop(context, poem);
               },
@@ -347,7 +322,7 @@ class MAtoZSlider extends State<AtoZSlider> {
         ? hasfavourites = true
         : hasfavourites = false;
     if (kDebugMode) {
-      print(hasfavourites);
+      print("in setAlphabet() $hasfavourites");
     }
     _text = "*";
     _oldtext = _text;
@@ -575,7 +550,7 @@ class MAtoZSlider extends State<AtoZSlider> {
                                       _alphabet.length)
                                   .round()];
                           if (kDebugMode) {
-                            print(_text + _oldtext);
+                            print("in onVerticalDragEnd: $_text $_oldtext");
                           }
                           if (_text != _oldtext) {
                             if (_text == '*') {

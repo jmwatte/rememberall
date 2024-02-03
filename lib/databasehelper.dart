@@ -95,7 +95,7 @@ class DatabaseHelper {
     }
     var b = await getPoemsCount();
     if (kDebugMode) {
-      print(b);
+      print(" In insertPoems poemscount:$b");
     }
     return result;
   }

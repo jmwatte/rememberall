@@ -9,12 +9,12 @@ class Saver {
       final file = File('${directory?.path}/$filename');
       String text = await file.readAsString();
       if (kDebugMode) {
-        print(text);
+        print("in Saver Read file: $text");
       }
       return text;
     } catch (e) {
       if (kDebugMode) {
-        print("Couldn't read file");
+        print("in Saver Couldn't read file");
       }
     }
   }
