@@ -36,7 +36,7 @@ class Constants {
     //rood
   ];
   static const List<String> listChoices = <String>[
-    openTxtForNewPoem,
+    importNewPoem,
     aNewPoem,
     exportAllToTxtFile,
     toArchive,
@@ -45,7 +45,7 @@ class Constants {
     usePrefs,
   ];
   static const String aNewPoem = 'New';
-  static const String openTxtForNewPoem = 'Import';
+  static const String importNewPoem = 'Import';
   static const String exportAllToTxtFile = 'ExportAll';
   static const String toArchive = 'Archiveren';
   static const String reset = 'Reset';
@@ -152,7 +152,7 @@ class Poem {
   }) {
     return Poem(
       id: id ?? this.id,
-      theText: input ?? this.theText,
+      theText: input ?? theText,
       levelnr: levelnr ?? this.levelnr,
       favourite: favourite ?? this.favourite,
       extraVisibleLetters: extraVisibleLetters ?? this.extraVisibleLetters,
@@ -271,8 +271,7 @@ class Poem {
   }
 }
 
-String testPoem =
-    '''ACCENTUATE THE POSITIVE
+String testPoem = '''ACCENTUATE THE POSITIVE
 You've got to accentuate the positive,
 eliminate the negative.
 Latch on to the affirmative,

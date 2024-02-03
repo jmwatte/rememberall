@@ -325,41 +325,7 @@ class MAtoZSlider extends State<AtoZSlider> {
     // widget.logic.setPoemsCache();
     // widget.logic.setItemCache();
     // {
-//     widget.items.sort(
-//         (a, b) => a.title().toUpperCase().compareTo(b.title().toUpperCase()));
-// // Partition items into favorites and non-favorites
-//     var fav = <LyricsTransformer>[];
-//     var notfav = <LyricsTransformer>[];
-//     for (var item in widget.items) {
-//       if (item.favourite) {
-//         fav.add(item);
-//       } else {
-//         notfav.add(item);
-//       }
-//       // }
-
-//       numOfFav = fav.length;
-//       _itemscache = fav.followedBy(notfav).toList();
-//     }
   }
-  //   var fav = widget.items.where((i) => i.favourite);
-  //   numOfFav = fav.length;
-  //   if (numOfFav > 0) {
-  //     fav = fav.toList()
-  //       ..sort((a, b) =>
-  //           a.title().toUpperCase().compareTo(b.title().toUpperCase()));
-
-  //     var notfav = widget.items.where((i) => !i.favourite).toList()
-  //       ..sort((a, b) =>
-  //           a.title().toUpperCase().compareTo(b.title().toUpperCase()));
-  //     //fav.followedBy(notfav);
-  //     _itemscache = fav.followedBy(notfav).toList();
-  //   } else {
-  //     _itemscache = widget.items
-  //       ..sort((a, b) =>
-  //           a.title().toUpperCase().compareTo(b.title().toUpperCase()));
-  //   }
-  // }
 
   bool hasfavourites = false;
   void setUpAlphabet() {
@@ -405,8 +371,8 @@ class MAtoZSlider extends State<AtoZSlider> {
 
   @override
   Widget build(BuildContext context) {
-    var poems =
-        watchValue((PoemsScreenLogic logic) => logic.selectedCategoryPoems);
+    // var poems =
+    //   watchValue((PoemsScreenLogic logic) => logic.selectedCategoryPoems);
     var poemscache = watchValue((PoemsScreenLogic logic) => logic.poemscache);
     var numOfFav = watchValue((PoemsScreenLogic logic) => logic.numOfFav);
     return LayoutBuilder(builder: (context, constraints) {

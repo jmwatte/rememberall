@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rememberall2/databasehelper.dart';
+import 'package:rememberall2/helpers.dart';
 import 'package:rememberall2/poem_model.dart';
 import 'package:rememberall2/main.dart';
 import 'package:rememberall2/saver_screen.dart';
@@ -90,17 +90,17 @@ class PoemsScreenLogic {
     //       multiLine: true);
     // }
 
-    poems = "$poems\nTHE END";
     // var results = catchPoem.allMatches(poems).map((m) => m.group(0)).toList();
 
     // var catchPoem = RegExp(
     //     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
     //     multiLine: true);
     if (isFirstRun) {
-      firstRunPoemsPieces.addAll(catchPoem
-          .allMatches(poems)
-          .map((e) => Poem()..theText = e.group(0)!)
-          .toList());
+      firstRunPoemsPieces.addAll(getPoemsFromString(poems, false));
+      // firstRunPoemsPieces.addAll(catchPoem
+      //     .allMatches(poems)
+      //     .map((e) => Poem()..theText = e.group(0)!)
+      //     .toList());
       // firstrunsongpieces.sort((a, b) => a.title().compareTo(b.title()));
 
       await databaseHelper.initializeDatabase();
@@ -152,31 +152,7 @@ class PoemsScreenLogic {
         print('updateListView() executed in ${stopwatch.elapsed}');
       }
     }
-    //  = databaseLyricsResult
-    //         .where((LyricsTransformer e) =>
-    //             e.category.isNotEmpty) // filter out empty categories
-    //         .map((e) => e.category)
-    //         .toSet()
-    //         .toList()
-    //     // .cast<String>()
-    //     ;
-    //categoryNames = songs.map((song) => song.category).toSet().toList();
-    //categoryWidgets = {};
-    //for (var category in categories.value) {
-    // if (category == 'all') {
-    // selectedCategorySongs.value = databaseLyricsResult;
-    //categoryWidgets[category] = createCategoryWidget(category,songpieces.value);
-    // } else {
-    //  selectedCategorySongs.value = await databaseHelper.getLyricsByCategory(category);
-    // databaseLyricsResult
-    //     .where((lyricResult) => lyricResult.category == category)
-    //     .toList();
-    // // categoryWidgets[category] = createCategoryWidget(
-    //     databaseLyricsResult
-    //         .where((lyricResult) => lyricResult.category == category)
-    //         .toList(),
-    //     category);
-    // }
+
     setPoemsCache();
   }
 
@@ -197,7 +173,7 @@ class PoemsScreenLogic {
     return text.replaceAll('\r\n', '\n');
   }
 
-  void openLoader() async {
+  void openImporter() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['txt'],
@@ -211,52 +187,19 @@ class PoemsScreenLogic {
         if (file.path != null) {
           var fileContent = await File(file.path!).readAsString();
           fileContent = normalizeLineEndings(fileContent);
-
-          print('=============================');
-          print(fileContent);
-          print('=============================');
-          var catchPoem = RegExp(
-              r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
-              multiLine: true);
-          var results =
-              catchPoem.allMatches(fileContent).map((m) => m.group(0)).toList();
-          print('=================');
-          print(results.join('\n'));
-          print('=================');
-
-          var poemsToImport = catchPoem.allMatches(fileContent).map((e) {
-            var poem = Poem()..favourite = true;
-            poem.theText =
-                e.group(0)!; // Note the change here from group(0) to group(1)
-            return poem;
-          }).toList();
+          var poemsToImport = getPoemsFromString(fileContent, true);
 
           if (kDebugMode) {
-            poemsToImport.forEach((poem) {
+            for (var poem in poemsToImport) {
               print(poem.theText);
-            });
+            }
           }
 
-          // var poemsToImport = catchPoem.allMatches(fileContent);
-          // var p = poemsToImport.map((e) {
-          //   var poem = Poem();
-          //   poem.theText = e.group(0)!;
-          //   return poem;
-          // }).toList();
-          // if (kDebugMode) {
-          //   print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-          //   print(p.first.theText);
-          //   print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-          // }
-          // poemsToImport.forEach((element) {
-          //   print(element.group(0));
-          // });
           if (poemsToImport.isNotEmpty) {
             for (var poem in poemsToImport) {
               // Save the song to the database.
               await databaseHelper.insertPoem(poem);
             }
-            // }
           }
         }
         updateListView();
