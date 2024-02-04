@@ -444,37 +444,68 @@ class MAtoZSlider extends State<AtoZSlider> {
                                     const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                 leading: InkWell(
                                   onLongPress: () async {
+                                    var showlevel =
+                                        false; // Boolean to control the visibility
                                     var a = await showDialog<Color>(
                                         context: context,
                                         builder: (context) {
-                                          return SimpleDialog(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0)),
-                                              title: const Text(
-                                                'level', // Remove the 'const' keyword here
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              children: Constants.levelkleur
-                                                  .map((e) =>
-                                                      SimpleDialogOption(
-                                                        child: CircleAvatar(
-                                                          backgroundColor: e,
-                                                        ),
+                                          return StatefulBuilder(
+                                            builder: (context, setState) {
+                                              return SimpleDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0)),
+                                                  title: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      TextButton(
+                                                        child: Text(showlevel
+                                                            ? 'Hide'
+                                                            : 'Show'),
                                                         onPressed: () {
-                                                          Navigator.pop(
-                                                              context, e);
+                                                          setState(() {
+                                                            showlevel =
+                                                                !showlevel;
+                                                          });
                                                         },
-                                                      ))
-                                                  .toList());
+                                                      ),
+                                                      const Text(
+                                                        'Level',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  children: Constants.levelkleur
+                                                      .map((e) =>
+                                                          SimpleDialogOption(
+                                                            child: CircleAvatar(
+                                                              backgroundColor:
+                                                                  e,
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context, e);
+                                                            },
+                                                          ))
+                                                      .toList());
+                                            },
+                                          );
                                         });
                                     if (a != null) {
-                                      poemscache[index].levelnr =
-                                          Constants.levelkleur.indexOf(a);
-                                      setState(() {
-                                        onSetLevelColor(poemscache[index]);
-                                      });
+                                      if (showlevel) {
+                                        logic.sortByColor(
+                                            Constants.levelkleur.indexOf(a));
+                                      } else {
+                                        poemscache[index].levelnr =
+                                            Constants.levelkleur.indexOf(a);
+                                        setState(() {
+                                          onSetLevelColor(poemscache[index]);
+                                        });
+                                      }
                                     }
                                   },
                                   child: CircleAvatar(

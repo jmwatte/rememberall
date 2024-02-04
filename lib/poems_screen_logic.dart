@@ -326,6 +326,34 @@ class PoemsScreenLogic {
     }
     selectedCategoryPoems.value = List.from(selectedCategoryPoems.value);
   }
+
+  void sortByColor(int a) {
+    // Check if there are any poems with the specified color
+    bool hasColorA =
+        selectedCategoryPoems.value.any((poem) => poem.levelnr == a);
+    if (!hasColorA) return; // If no poems have color a, do not sort
+
+    // Sort poems by color and then by favorite status
+    selectedCategoryPoems.value.sort((Poem x, Poem y) {
+      // First sort by color 'a'
+      if (x.levelnr == a && y.levelnr != a) {
+        return -1;
+      } else if (x.levelnr != a && y.levelnr == a) {
+        return 1;
+      } else if (x.levelnr == a && y.levelnr == a) {
+        // If both have color 'a', sort by favorite status
+        if (x.favourite && !y.favourite) {
+          return -1;
+        } else if (!x.favourite && y.favourite) {
+          return 1;
+        }
+      }
+      // If colors are the same and favorite status is the same, maintain original order
+      return 0;
+    });
+    poemscache.value = List.from(selectedCategoryPoems.value);
+    //setPoemsCache();
+  }
 }
 
 class CategoriesNotifier extends ValueNotifier<List<String>> {
