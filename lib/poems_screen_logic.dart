@@ -10,13 +10,17 @@ import 'package:rememberall2/main.dart';
 import 'package:rememberall2/saver_screen.dart';
 import 'package:rememberall2/poems_collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class PoemsScreenLogic {
   //List<String> categoryNames = ['all'];
   //Map<String, Widget> categoryWidgets = {};
 
 //endtest
+  final fillDatabase = ValueNotifier<bool>(false);
+
   final useSharedPrefs = ValueNotifier<bool>(false);
+  final isFirstRun = ValueNotifier<bool>(false);
   final poemscache = ValueNotifier<List<Poem>>([]);
   final numOfFav = ValueNotifier<int>(0);
   final categories = ValueNotifier<List<String>>([]);
@@ -40,8 +44,10 @@ class PoemsScreenLogic {
   PoemsScreenLogic() {
     SharedPreferences.getInstance().then((prefs) {
       useSharedPrefs.value = prefs.getBool('useSharedPrefs') ?? false;
+      isFirstRun.value = prefs.getBool('isFirstRun') ?? true;
     });
   }
+
   void categoryHasChangedTo(String category) async {
     final stopwatch = Stopwatch()..start();
 
@@ -66,28 +72,36 @@ class PoemsScreenLogic {
     //setPoemsCache();
   }
 
+  Future<String> loadPoemsFromAssets() async {
+    return await rootBundle.loadString('assets/poems.txt');
+  }
+
   void loadPoems() async {
     if (kDebugMode) {
       print('loadPoems() started');
     }
     final stopwatch = Stopwatch()..start();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
 
-    if (isFirstRun) {
+    if (isFirstRun.value) {
       if (kDebugMode) {
         print("loadPoems()IsFirstRum = $isFirstRun started");
       }
-      firstRunPoemsPieces.addAll(getPoemsFromString(poems, false));
-
       await databaseHelper.initializeDatabase();
-      for (var poem in firstRunPoemsPieces) {
-        whatWeGot.value = poem.poemTitle();
-        whatWeGotAlso.value = poem.poemTitle();
+      if (fillDatabase.value == true) {
+        poems = await loadPoemsFromAssets();
 
-        await databaseHelper.insertPoem(poem);
+        firstRunPoemsPieces.addAll(getPoemsFromString(poems, false));
+        for (var poem in firstRunPoemsPieces) {
+          whatWeGot.value = poem.poemTitle();
+          whatWeGotAlso.value = poem.poemTitle();
+          await databaseHelper.insertPoem(poem);
+        }
       }
-      await prefs.setBool('isFirstRun', false);
+      SharedPreferences.getInstance()
+          .then((prefs) => prefs.setBool('isFirstRun', false));
+      // await prefs.setBool('isFirstRun', false);
       if (isDebugMode) {
         if (kDebugMode) {
           print('loadPoems() executed in ${stopwatch.elapsed}');
@@ -146,10 +160,10 @@ class PoemsScreenLogic {
   }
 
   final saver = Saver();
-  void exportAllToTxtFile() async {
+  void exportAllToTxtFile(String fileName) async {
     var archive = await databaseHelper.getPoemsfromDB();
     var archiveInTextFormat = archive.map((e) => e.theText.trim()).join('\n\n');
-    saver.save('test.txt', archiveInTextFormat);
+    saver.save(fileName, archiveInTextFormat);
   }
 
   String normalizeLineEndings(String text) {

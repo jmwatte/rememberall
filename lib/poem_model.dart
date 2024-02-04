@@ -55,9 +55,9 @@ class Constants {
 
 class CutUpPoemSheet {}
 
-var catchPoem = RegExp(
-    r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=(^[^\s][^.][^a-z\n]*\n+))''',
-    multiLine: true);
+// var catchPoem = RegExp(
+//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=(^[^\s][^.][^a-z\n]*\n+))''',
+//     multiLine: true);
 // var catchPoem = RegExp(
 //     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
 //     multiLine: true);
@@ -271,7 +271,8 @@ class Poem {
   }
 }
 
-String testPoem = '''ACCENTUATE THE POSITIVE
+String testPoem =
+    '''ACCENTUATE THE POSITIVE
 You've got to accentuate the positive,
 eliminate the negative.
 Latch on to the affirmative,

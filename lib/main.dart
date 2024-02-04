@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:rememberall2/blokkerscreen_logic.dart';
+import 'package:rememberall2/helpers.dart';
 import 'package:rememberall2/poem_screen_logic.dart';
 import 'package:rememberall2/poems_screen_logic.dart';
 import 'package:watch_it/watch_it.dart';
 import 'editorscreen.dart';
-import 'poems_screen.dart';
 
 //import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 //import 'dart:async' show Future;
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
       routes: {
         EditorScreen.routeName: (context) => EditorScreen(),
       },
-      home: const MyPoems(),
+      home: const FirstRunScreen(),
     );
   }
 }

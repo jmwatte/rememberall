@@ -43,10 +43,41 @@ class MyPoemsState extends State<MyPoems> {
 
   Future<void> choiceAction(String choice) async {
     if (choice == Constants.exportAllToTxtFile) {
-      di.get<PoemsScreenLogic>().exportAllToTxtFile();
+      String fileName = '';
+
       if (kDebugMode) {
         print('in choiceAction exportAllToTxtFile');
       }
+      return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Enter File Name'),
+              content: TextField(
+                onChanged: (value) {
+                  fileName = value;
+                },
+                decoration: const InputDecoration(hintText: "File name"),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Save'),
+                  onPressed: () {
+                    // Perform file save operation with _fileName
+                    // e.g., di.get<PoemsScreenLogic>().saveToFile(_fileName);
+                    di.get<PoemsScreenLogic>().exportAllToTxtFile(fileName);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
     } else if (choice == Constants.importNewPoem) {
       di.get<PoemsScreenLogic>().openImporter();
     } else if (choice == Constants.toArchive) {
@@ -235,6 +266,7 @@ class MyPoemsState extends State<MyPoems> {
     //  var selectedCategoryPoems =
     //    watchValue((PoemsScreenLogic s) => s.selectedCategoryPoems);
     var titleText = watchValue((PoemsScreenLogic s) => s.appBarTitle);
+
     return Scaffold(
         appBar: AppBar(
           title: Text(titleText),
