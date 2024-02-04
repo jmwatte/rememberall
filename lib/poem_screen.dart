@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_font_picker/flutter_font_picker.dart';
 import 'package:rememberall2/fonts.dart';
 import 'package:watch_it/watch_it.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class OnePoemSreen extends StatefulWidget with WatchItStatefulWidgetMixin {
   final Poem poem;

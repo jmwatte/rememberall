@@ -77,7 +77,7 @@ class FirstRunScreen extends StatelessWidget {
               onPressed: () {
                 // Execute logic to fill the database
                 di<PoemsScreenLogic>().fillDatabase.value = true;
-                Navigator.of(context).push(
+                Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => const MyPoems()));
               },
               child: Text(
@@ -107,7 +107,7 @@ class FirstRunScreen extends StatelessWidget {
               onPressed: () {
                 // Execute logic for a clean database
                 di<PoemsScreenLogic>().fillDatabase.value = false;
-                Navigator.of(context).push(
+                Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => const MyPoems()));
 
                 // Navigate to next screen or perform desired action

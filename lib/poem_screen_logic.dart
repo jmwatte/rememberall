@@ -1,11 +1,12 @@
 import 'dart:math';
-import 'package:connectivity/connectivity.dart';
+//import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rememberall2/poem_model.dart';
 import 'package:rememberall2/poems_screen_logic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/watch_it.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class PoemScreenLogic extends ChangeNotifier {
   final List<Color> cycleColors = [
@@ -40,7 +41,6 @@ class PoemScreenLogic extends ChangeNotifier {
       ValueNotifier<ConnectivityResult>(ConnectivityResult.none);
   PoemScreenLogic() {
     _initConnectivity();
-    Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
 
     if (di.get<PoemsScreenLogic>().useSharedPrefs.value) {
       initSharedPrefs();
@@ -49,6 +49,7 @@ class PoemScreenLogic extends ChangeNotifier {
     }
   }
   Future<void> _initConnectivity() async {
+    connectionStatus.value = await Connectivity().checkConnectivity();
     ConnectivityResult result = ConnectivityResult.none;
     try {
       result = await (Connectivity().checkConnectivity());

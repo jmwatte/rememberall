@@ -1,12 +1,11 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Saver {
-  Future<String?> pickSaveDirectory() async {
+  Future<Directory?> pickSaveDirectory() async {
     try {
-      String? directoryPath = await FilePicker.platform.getDirectoryPath();
+      Directory? directoryPath = await getDownloadsDirectory();
       return directoryPath;
     } catch (e) {
       if (kDebugMode) {
@@ -33,9 +32,10 @@ class Saver {
   }
 
   save(String filename, String data) async {
-    String? seletedDirectory = await pickSaveDirectory();
-    final file = File('$seletedDirectory.path}/$filename');
-    file.createSync(recursive: true);
+    filename = "$filename.txt";
+    Directory? seletedDirectory = await pickSaveDirectory();
+    final file = File('${seletedDirectory?.path}/$filename');
+    // file.createSync(recursive: true);
     await file.writeAsString(data);
 
 /*     if (!await lyricsdirectory.exists()) {

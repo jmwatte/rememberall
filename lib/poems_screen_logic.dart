@@ -20,7 +20,7 @@ class PoemsScreenLogic {
   final fillDatabase = ValueNotifier<bool>(false);
 
   final useSharedPrefs = ValueNotifier<bool>(false);
-  final isFirstRun = ValueNotifier<bool>(false);
+  final isFirstRun = ValueNotifier<bool>(true);
   final poemscache = ValueNotifier<List<Poem>>([]);
   final numOfFav = ValueNotifier<int>(0);
   final categories = ValueNotifier<List<String>>([]);
@@ -109,7 +109,7 @@ class PoemsScreenLogic {
       }
       if (isDebugMode) {
         if (kDebugMode) {
-          print('loadPoems() finished first run');
+          print('loadPoems() finished first run IsFirstRum = $isFirstRun');
         }
       }
       //updateListView();
@@ -117,7 +117,7 @@ class PoemsScreenLogic {
     }
     if (isDebugMode) {
       if (kDebugMode) {
-        print('loadPoems() finished no first run');
+        print('loadPoems() finished no first run IsFirstRum = $isFirstRun');
       }
     } //on first run populate the database
 
@@ -162,12 +162,16 @@ class PoemsScreenLogic {
   final saver = Saver();
   void exportAllToTxtFile(String fileName) async {
     var archive = await databaseHelper.getPoemsfromDB();
-    var archiveInTextFormat = archive.map((e) => e.theText.trim()).join('\n\n');
+    var archiveInTextFormat = archive
+        .map((e) => "****************\n${e.theText.trim()}")
+        .join('\n\n');
     saver.save(fileName, archiveInTextFormat);
   }
 
   String normalizeLineEndings(String text) {
-    return text.replaceAll('\r\n', '\n');
+    return text
+        .replaceAll(RegExp(r'[^\x00-\x7F]+'), '')
+        .replaceAll('\r\n', '\n');
   }
 
   void openImporter() async {
