@@ -2,7 +2,7 @@ import 'dart:core';
 
 var poems = '''
 
-SONNET 1 SHAKESPEARE 
+SONNET 01 SHAKESPEARE 
 From fairest creatures we desire increase,
 That thereby beauty's rose might never die,
 But as the riper should by time decease,
@@ -18,7 +18,7 @@ And tender churl mak'st waste in niggarding:
     Pity the world, or else this glutton be,
     To eat the world's due, by the grave and thee.
 
-SONNET 2 SHAKESPEARE 
+SONNET 02 SHAKESPEARE 
 When forty winters shall besiege thy brow,
 And dig deep trenches in thy beauty's field,
 Thy youth's proud livery so gazed on now,
@@ -34,7 +34,7 @@ Proving his beauty by succession thine!
     This were to be new made when thou art old,
     And see thy blood warm when thou feel'st it cold.
 
-SONNET 3 SHAKESPEARE 
+SONNET 03 SHAKESPEARE 
 Look in thy glass and tell the face thou viewest
 Now is the time that face should form another;
 Whose fresh repair if now thou not renewest,
@@ -50,7 +50,7 @@ Despite of wrinkles this thy golden time.
     But if thou live, remember'd not to be,
     Die single and thine image dies with thee.
 
-SONNET 4 SHAKESPEARE 
+SONNET 04 SHAKESPEARE 
 Unthrifty loveliness, why dost thou spend
 Upon thyself thy beauty's legacy?
 Nature's bequest gives nothing, but doth lend,
@@ -66,7 +66,7 @@ What acceptable audit canst thou leave?
     Thy unused beauty must be tombed with thee,
     Which, used, lives th' executor to be.
 
-SONNET 5 SHAKESPEARE 
+SONNET 05 SHAKESPEARE 
 Those hours, that with gentle work did frame
 The lovely gaze where every eye doth dwell,
 Will play the tyrants to the very same
@@ -83,7 +83,7 @@ Nor it, nor no remembrance what it was:
     Leese but their show; their substance still lives sweet.
 
 
-SONNET 6 SHAKESPEARE
+SONNET 06 SHAKESPEARE
 Then let not winter's ragged hand deface,
 In thee thy summer, ere thou be distill'd:
 Make sweet some vial; treasure thou some place
@@ -99,7 +99,7 @@ Leaving thee living in posterity?
     Be not self-will'd, for thou art much too fair
     To be death's conquest and make worms thine heir.
 
-SONNET 7 SHAKESPEARE
+SONNET 07 SHAKESPEARE
 Lo! in the orient when the gracious light
 Lifts up his burning head, each under eye
 Doth homage to his new-appearing sight,
@@ -115,7 +115,7 @@ From his low tract, and look another way:
     So thou, thyself outgoing in thy noon:
     Unlook'd, on diest unless thou get a son.
 
-SONNET 8 SHAKESPEARE
+SONNET 08 SHAKESPEARE
 Music to hear, why hear'st thou music sadly?
 Sweets with sweets war not, joy delights in joy:
 Why lov'st thou that which thou receiv'st not gladly,
@@ -131,7 +131,7 @@ Who, all in one, one pleasing note do sing:
     Whose speechless song being many, seeming one,
     Sings this to thee: 'Thou single wilt prove none.'
 
-SONNET 9 SHAKESPEARE
+SONNET 09 SHAKESPEARE
 Is it for fear to wet a widow's eye,
 That thou consum'st thyself in single life?
 Ah! if thou issueless shalt hap to die,
