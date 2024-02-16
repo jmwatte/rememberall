@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rememberall2/blokkerscreen_logic.dart';
+import 'package:rememberall2/edit_faulty_input_text.dart';
 import 'package:rememberall2/helpers.dart';
 import 'package:rememberall2/poem_screen_logic.dart';
 import 'package:rememberall2/poems_screen.dart';
@@ -14,7 +15,7 @@ import 'editorscreen.dart';
 //import 'dart:async' show Future;
 //import 'package:flutter/services.dart' show rootBundle;
 bool isDebugMode = false;
-bool isFirstRun = true;
+late bool isFirstRun;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setup();
@@ -54,6 +55,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         EditorScreen.routeName: (context) => EditorScreen(),
+        EditorFaultyInputScreen.routeName: (context) =>
+            EditorFaultyInputScreen(),
       },
       home: isFirstRun ? const FirstRunScreen() : const MyPoems(),
     );

@@ -1,3 +1,5 @@
+import 'package:rememberall2/edit_faulty_input_text.dart';
+import 'package:rememberall2/helpers.dart';
 import 'package:rememberall2/loadingscreen.dart';
 import 'package:rememberall2/poem_screen_logic.dart';
 import 'package:rememberall2/poems_screen_logic.dart';
@@ -79,7 +81,11 @@ class MyPoemsState extends State<MyPoems> {
             );
           });
     } else if (choice == Constants.importNewPoem) {
-      di.get<PoemsScreenLogic>().openImporter();
+      di.get<PoemsScreenLogic>().openImporter().then((value) {
+        if (value != "") {
+          _openeditorFaultyInput(context, value);
+        }
+      });
     } else if (choice == Constants.toArchive) {
       di.get<PoemsScreenLogic>().toArchive();
       //  _openeditor(context, widget.ltf);
@@ -184,6 +190,22 @@ class MyPoemsState extends State<MyPoems> {
         arguments: input);
     if (result is String) {
       di.get<PoemsScreenLogic>().addNewPoem(result);
+    }
+  }
+
+  _openeditorFaultyInput(BuildContext context, String input) async {
+    var result = await Navigator.pushNamed(
+        context, EditorFaultyInputScreen.routeName,
+        arguments: input);
+    if (result is String) {
+      result = di.get<PoemsScreenLogic>().normalizeLineEndings(result);
+      List<Poem> poems = getPoemsFromString(result, true);
+      for (var poem in poems) {
+        // Save the song to the database.
+        await di.get<PoemsScreenLogic>().databaseHelper.insertPoem(poem);
+      }
+      updateListView();
+      di.get<PoemsScreenLogic>().categoryHasChangedTo('all');
     }
   }
 

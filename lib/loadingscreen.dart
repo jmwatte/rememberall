@@ -12,15 +12,18 @@ class LoadingScreen extends StatelessWidget {
     var displayStringShort =
         displayString.substring(0, min(displayString.length, 40));
     double fontSize = 200.0 - (displayStringShort.length * 5.0);
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Colors.blue,
-      child: Center(
-        child: Text(
-          displayStringShort,
-          style: TextStyle(
-              fontSize: fontSize == 0 ? 1 : fontSize, color: Colors.white),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.blue,
+        child: Center(
+          child: Text(
+            displayStringShort,
+            style: TextStyle(
+                fontSize: fontSize == 0 ? 1 : fontSize, color: Colors.white),
+          ),
         ),
       ),
     );

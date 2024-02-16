@@ -174,43 +174,53 @@ class PoemsScreenLogic {
         .replaceAll('\r\n', '\n');
   }
 
-  void openImporter() async {
+  Future<String> openImporter() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['txt'],
       allowMultiple: true,
     );
 
+    var poemsToImport = [];
+    var fileContent = '';
+    var noGoodFiles = '';
     if (result != null) {
       List<PlatformFile> files = result.files;
-
       for (var file in files) {
         if (file.path != null) {
-          var fileContent = await File(file.path!).readAsString();
+          fileContent = await File(file.path!).readAsString();
           fileContent = normalizeLineEndings(fileContent);
-          var poemsToImport = getPoemsFromString(fileContent, true);
-
-          if (kDebugMode) {
-            for (var poem in poemsToImport) {
-              print("in openImporter()");
-              print(poem.theText);
+          var poems = getPoemsFromString(fileContent, true);
+          if (poems.isNotEmpty) {
+            for (var poem in poems) {
+              poemsToImport.add(poem);
             }
-          }
-
-          if (poemsToImport.isNotEmpty) {
-            for (var poem in poemsToImport) {
-              // Save the song to the database.
-              await databaseHelper.insertPoem(poem);
-            }
+          } else {
+            noGoodFiles += '$fileContent\n\n';
           }
         }
       }
+    }
+
+    if (poemsToImport.isEmpty) {
+      return noGoodFiles;
+    } else {
+      if (kDebugMode) {
+        for (var poem in poemsToImport) {
+          print("in openImporter()");
+          print(poem.theText);
+        }
+      }
+
+      for (var poem in poemsToImport) {
+        // Save the song to the database.
+        await databaseHelper.insertPoem(poem);
+      }
       updateListView();
       categoryHasChangedTo('all');
+      return "";
     }
   }
-
-  void toArchive() {}
 
   void addNewPoem(String poem) {
     if (poem.toString().isNotEmpty) {
@@ -372,6 +382,8 @@ class PoemsScreenLogic {
     poemscache.value = List.from(selectedCategoryPoems.value);
     //setPoemsCache();
   }
+
+  void toArchive() {}
 }
 
 class CategoriesNotifier extends ValueNotifier<List<String>> {
