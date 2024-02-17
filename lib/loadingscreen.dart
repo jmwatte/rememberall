@@ -13,7 +13,7 @@ class LoadingScreen extends StatelessWidget {
         displayString.substring(0, min(displayString.length, 40));
     double fontSize = 200.0 - (displayStringShort.length * 5.0);
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0.0),
       child: Container(
         width: double.infinity,
         height: double.infinity,

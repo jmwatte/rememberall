@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rememberall2/poem_model.dart';
 import 'package:rememberall2/poems_screen.dart';
@@ -17,8 +18,21 @@ List<Poem> getPoemsFromString(String poemsString, bool favourite) {
 
   result = catchPoem.allMatches(poemsString).map((e) {
     var poem = Poem()..favourite = favourite;
-    poem.theText =
-        e.group(0)!; // Note the change here from group(0) to group(1)
+    //if the result starts with empty lines ... remove them till the first line tht is not empty
+    poem.theText = e.group(0)!;
+    poem.theText = poem.theText.trimLeft();
+
+    //make the firstline of e that goes to poem.theText in all uppercase letters
+    poem.theText = e
+        .group(0)!
+        .replaceFirstMapped(RegExp(r'^.*$', multiLine: true), (Match match) {
+      if (kDebugMode) {
+        print("match0= ${match[0]!}");
+      }
+      return match[0]!.toUpperCase();
+    }); // Note the change here
+    // poem.theText =
+    //     e.group(0)!; // Note the change here from group(0) to group(1)
     return poem;
   }).toList();
   return result;

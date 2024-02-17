@@ -23,9 +23,19 @@ class EditorScreen extends StatelessWidget {
             IconButton(
                 icon: const Icon(Icons.check_circle),
                 onPressed: () {
+                  //remove empty lines at the top of the contr.text
+                  contr.text = contr.text.trimLeft();
+                  //put the first line of contr.txt in all UpperCase
+
+                  contr.text = contr.text.replaceFirstMapped(
+                      RegExp(r'^.*$', multiLine: true), (Match match) {
+                    print("match0= ${match[0]!}");
+
+                    return match[0]!.toUpperCase();
+                  });
                   poem.theText = contr.text;
                   if (kDebugMode) {
-                    print("in editor)+ ${poem.theText}");
+                    print("in editor+ ${poem.theText}");
                   }
                 })
           ],

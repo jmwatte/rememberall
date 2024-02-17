@@ -23,9 +23,18 @@ class EditorFaultyInputScreen extends StatelessWidget {
             IconButton(
                 icon: const Icon(Icons.check_circle),
                 onPressed: () {
-                  poem = contr.text;
+                  poem = contr.text.trimLeft();
+                  //put the first line of contr.txt in all UpperCase
+
+                  poem = contr.text.replaceFirstMapped(
+                      RegExp(r'^.*$', multiLine: true), (Match match) {
+                    print("match0= ${match[0]!}");
+
+                    return match[0]!.toUpperCase();
+                  });
+
                   if (kDebugMode) {
-                    print("in editor)+ $poem");
+                    print("in editor+ $poem");
                   }
                 })
           ],

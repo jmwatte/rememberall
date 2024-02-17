@@ -186,6 +186,8 @@ class MAtoZSlider extends State<AtoZSlider> {
               title: const Text('Delete'),
               onTap: () {
                 setState(() {
+                  //is there a way in which we can delete all the items in the listview that have their slidable in the open position?
+
                   logic.onDeletePoem(poemscache.value[index]);
                 });
                 Navigator.pop(context);

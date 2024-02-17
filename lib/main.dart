@@ -18,21 +18,21 @@ bool isDebugMode = false;
 late bool isFirstRun;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  setup();
-  assert(() {
-    isDebugMode = true;
-    return true;
-  }());
-  runApp(const MyApp());
+  setup().then((_) {
+    assert(() {
+      isDebugMode = true;
+      return true;
+    }());
+    runApp(const MyApp());
+  });
 }
 
-void setup() {
+Future<void> setup() async {
   di.registerLazySingleton<PoemScreenLogic>(() => PoemScreenLogic());
   di.registerLazySingleton<PoemsScreenLogic>(() => PoemsScreenLogic());
   di.registerLazySingleton<BlokkerScreenLogic>(() => BlokkerScreenLogic());
-  SharedPreferences.getInstance().then((prefs) {
-    isFirstRun = prefs.getBool('isFirstRun') ?? true;
-  });
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  isFirstRun = prefs.getBool('isFirstRun') ?? true;
 }
 
 class MyApp extends StatelessWidget {

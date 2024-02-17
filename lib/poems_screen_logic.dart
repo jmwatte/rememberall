@@ -202,24 +202,25 @@ class PoemsScreenLogic {
       }
     }
 
-    if (poemsToImport.isEmpty) {
-      return noGoodFiles;
-    } else {
-      if (kDebugMode) {
-        for (var poem in poemsToImport) {
-          print("in openImporter()");
-          print(poem.theText);
-        }
-      }
-
+    if (poemsToImport.isNotEmpty) {
       for (var poem in poemsToImport) {
         // Save the song to the database.
         await databaseHelper.insertPoem(poem);
+        updateListView();
+        categoryHasChangedTo('all');
       }
-      updateListView();
-      categoryHasChangedTo('all');
-      return "";
     }
+    if (kDebugMode) {
+      for (var poem in poemsToImport) {
+        print("in openImporter()");
+        print(poem.theText);
+      }
+    }
+    if (noGoodFiles.isNotEmpty) {
+      return noGoodFiles;
+    }
+
+    return "";
   }
 
   void addNewPoem(String poem) {
