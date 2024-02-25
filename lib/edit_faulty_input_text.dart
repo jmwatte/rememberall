@@ -28,7 +28,9 @@ class EditorFaultyInputScreen extends StatelessWidget {
 
                   poem = contr.text.replaceFirstMapped(
                       RegExp(r'^.*$', multiLine: true), (Match match) {
-                    print("match0= ${match[0]!}");
+                    if (kDebugMode) {
+                      print("match0= ${match[0]!}");
+                    }
 
                     return match[0]!.toUpperCase();
                   });

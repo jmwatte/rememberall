@@ -225,7 +225,9 @@ class PoemsScreenLogic {
 
   void addNewPoem(String poem) {
     if (poem.toString().isNotEmpty) {
-      databaseHelper.insertPoem(Poem()..theText = poem);
+      databaseHelper.insertPoem(Poem()
+        ..theText = poem
+        ..favourite = true);
       updateListView();
       categoryHasChangedTo(selectedCategory.value);
       //selectedCategoryPoems.value.add(Poem()..theText = poem);
