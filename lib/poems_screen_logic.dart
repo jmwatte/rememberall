@@ -43,7 +43,7 @@ class PoemsScreenLogic {
 
   PoemsScreenLogic() {
     SharedPreferences.getInstance().then((prefs) {
-      useSharedPrefs.value = prefs.getBool('useSharedPrefs') ?? false;
+      useSharedPrefs.value = prefs.getBool('usePrefs') ?? false;
       isFirstRun.value = prefs.getBool('isFirstRun') ?? true;
     });
   }
@@ -225,6 +225,8 @@ class PoemsScreenLogic {
 
   void addNewPoem(String poem) {
     if (poem.toString().isNotEmpty) {
+      //change thefirst line to allcaps
+
       databaseHelper.insertPoem(Poem()
         ..theText = poem
         ..favourite = true);

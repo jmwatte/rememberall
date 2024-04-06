@@ -32,6 +32,7 @@ Future<void> setup() async {
   di.registerLazySingleton<PoemsScreenLogic>(() => PoemsScreenLogic());
   di.registerLazySingleton<BlokkerScreenLogic>(() => BlokkerScreenLogic());
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  di.get<PoemScreenLogic>().useSharedPrefs = prefs.getBool('usePrefs') ?? false;
   isFirstRun = prefs.getBool('isFirstRun') ?? true;
 }
 
