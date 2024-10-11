@@ -26,7 +26,7 @@ class PoemsScreenLogic {
   final categories = ValueNotifier<List<String>>([]);
   final selectedCategory = ValueNotifier<String>('all');
   final appBarTitle = ValueNotifier<String>("Songlist"); // Add this line
-  final whatWeGot = ValueNotifier<String>('No poems yet');
+  final whatWeGot = ValueNotifier<String>('No files yet');
   final whatWeGotAlso = ValueNotifier<String>('Select a category');
   // final songpieces = ValueNotifier<List<LyricsTransformer>>([]);
   final selectedCategoryPoems = ValueNotifier<List<Poem>>([]);
