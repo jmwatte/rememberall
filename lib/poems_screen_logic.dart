@@ -113,17 +113,23 @@ class PoemsScreenLogic {
           print('loadPoems() finished first run IsFirstRum = $isFirstRun');
         }
       }
-      //updateListView();
-      //categoryHasChangedTo('all');
+      updateListView();
+      categoryHasChangedTo('all');
     }
-    if (isDebugMode) {
-      if (kDebugMode) {
-        print('loadPoems() finished no first run IsFirstRum = $isFirstRun');
+    // if (isDebugMode) {
+    //  if (kDebugMode) {
+    //   print('loadPoems() finished no first run IsFirstRun = $isFirstRun');
+    // }
+    //} //on first run populate the database
+    else {
+      updateListView();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (prefs.getString('selectedCategory') != null) {
+        categoryHasChangedTo(prefs.getString('selectedCategory')!);
+      } else {
+        categoryHasChangedTo('all');
       }
-    } //on first run populate the database
-
-    updateListView();
-    categoryHasChangedTo('all');
+    }
   }
 
   void updateListView() async {
