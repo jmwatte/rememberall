@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rememberall2/poem_screen_logic.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/watch_it.dart';
 
 class BlokkerScreen extends StatefulWidget with WatchItStatefulWidgetMixin {
@@ -10,15 +12,30 @@ class BlokkerScreen extends StatefulWidget with WatchItStatefulWidgetMixin {
 }
 
 class BlokkerScreenState extends State<BlokkerScreen> {
-  final blokkerchoicesConsonants = '|xXxX*#¤_¤•□■▄▬○●=^.∆ΘΞΠ°'.split('');
-  final blokkerchoicesVowels = 'xX*#¤_¤•□■▄▬○●=^.∆ΘΞΠ°'.split('');
+  final blokkerchoicesConsonants = '|xXxX *#¤_¤•□■▄▬○●=^.∆ΘΞΠ°♦◘░▒▓'.split('');
+  final blokkerchoicesVowels = 'xX* #¤_¤•□■▄▬○●=^.∆ΘΞΠ°♦◘░▒▓'.split('');
   String selectedConsonant = di.get<PoemScreenLogic>().blokker.value;
   String selectedVowel = di.get<PoemScreenLogic>().blokkerVowel.value;
   int selectedConsonantIndex = 0;
   int selectedVowelIndex = 0;
+  String _selectedFont = 'Roboto Mono';
+
+  @override
+  void initState() {
+    super.initState();
+    // _loadBlokker();
+    _loadFont();
+  }
+
+  void _loadFont() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _selectedFont = prefs.getString('selectedFont') ?? 'Roboto Mono';
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    // _loadFont();
     selectedConsonantIndex = blokkerchoicesConsonants
         .indexOf(di.get<PoemScreenLogic>().blokker.value);
     selectedVowelIndex = blokkerchoicesVowels
@@ -54,12 +71,10 @@ class BlokkerScreenState extends State<BlokkerScreen> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            isConsonant ? 'Consonants' : 'Vowels',
-            style: const TextStyle(fontSize: 24),
-          ),
-        ),
+            padding: const EdgeInsets.all(8.0),
+            child: Text(isConsonant ? 'Consonants' : 'Vowels',
+                style: GoogleFonts.getFont(_selectedFont,
+                    color: Colors.black, fontSize: 24.0))),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(8),
@@ -70,7 +85,10 @@ class BlokkerScreenState extends State<BlokkerScreen> {
                         !isConsonant && index == selectedVowelIndex
                     ? Colors.blue
                     : null,
-                title: Center(child: Text(blokkerchoices[index] * 11)),
+                title: Center(
+                    child: Text(blokkerchoices[index] * 11,
+                        style: GoogleFonts.getFont(_selectedFont,
+                            color: Colors.black, fontSize: 24.0))),
                 onTap: () {
                   setState(() {
                     if (isConsonant) {

@@ -114,6 +114,13 @@ class PoemScreenLogic extends ChangeNotifier {
     );
   }
 
+  Future<String> loadFont() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('selectedFont') ?? 'Roboto Mono';
+
+    // setState(() {});
+  }
+
   void usePoemsPrefs(Poem value) {
     toggleStart.value = value.seeStart;
     toggleEnd.value = value.seeEnd;
