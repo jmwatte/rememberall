@@ -45,6 +45,7 @@ class PoemsScreenLogic {
     SharedPreferences.getInstance().then((prefs) {
       useSharedPrefs.value = prefs.getBool('usePrefs') ?? false;
       isFirstRun.value = prefs.getBool('isFirstRun') ?? true;
+      selectedCategory.value = prefs.getString('selectedCategory') ?? 'all';
     });
   }
 

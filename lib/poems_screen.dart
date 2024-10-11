@@ -181,6 +181,8 @@ class MyPoemsState extends State<MyPoems> {
       if (result != null) {
         di.get<PoemsScreenLogic>().categoryHasChangedTo(result);
         di.get<PoemsScreenLogic>().appBarTitle.value = result;
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('selectedCategory', result);
       }
     });
   }
