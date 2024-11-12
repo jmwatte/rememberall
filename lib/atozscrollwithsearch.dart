@@ -232,8 +232,27 @@ class MAtoZSlider extends State<AtoZSlider> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
+                  padding: const EdgeInsets.all(8.0),
+                  //how can we do autosuggest in the textfield?
+
+                  child: Autocomplete<String>(
+                    optionsBuilder: (TextEditingValue value) {
+                      if (value.text.isEmpty) {
+                        return const Iterable<String>.empty();
+                      } else {
+                        //TODO: implement the search logic
+                        var categories = logic.categories.value;
+                        return categories.where((option) => option
+                            .toLowerCase()
+                            .contains(value.text.toLowerCase()));
+                      }
+                    },
+                    onSelected: (String selection) {
+                      categoryController.text = selection;
+                    },
+                  )
+
+                  /* TextField(
                   controller: categoryController,
                   onChanged: (value) {
                     poem.category = value.isNotEmpty ? value : '';
@@ -243,12 +262,16 @@ class MAtoZSlider extends State<AtoZSlider> {
                         ? "Enter category"
                         : "Change ${poem.category}",
                   ),
-                ),
-              ),
+                ), */
+                  ),
               ElevatedButton(
                 child: const Text('Save'),
                 onPressed: () {
                   setState(() {
+                    if (categoryController.text.toLowerCase() == "all") {
+                      categoryController.text = "";
+                    }
+                    poem.category = categoryController.text;
                     updateCategory(poem.id!, poem.category);
                     // Update the category of the item in the database
                     //databaseHelper.updatelyric(item);
@@ -270,7 +293,7 @@ class MAtoZSlider extends State<AtoZSlider> {
     setState(() {
       var itemToUpdate = poems.value.firstWhere((element) => element.id == id);
 
-      // Update the category of the item
+      //TODO Update the category of the item
       itemToUpdate.category = newCategory;
 
       // Update the state to reflect the change in the UI
