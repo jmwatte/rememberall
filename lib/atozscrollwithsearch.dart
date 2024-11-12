@@ -240,8 +240,8 @@ class MAtoZSlider extends State<AtoZSlider> {
                       if (value.text.isEmpty) {
                         return const Iterable<String>.empty();
                       } else {
-                        //TODO: implement the search logic
                         var categories = logic.categories.value;
+                        categoryController.text = value.text;
                         return categories.where((option) => option
                             .toLowerCase()
                             .contains(value.text.toLowerCase()));
@@ -250,20 +250,7 @@ class MAtoZSlider extends State<AtoZSlider> {
                     onSelected: (String selection) {
                       categoryController.text = selection;
                     },
-                  )
-
-                  /* TextField(
-                  controller: categoryController,
-                  onChanged: (value) {
-                    poem.category = value.isNotEmpty ? value : '';
-                  },
-                  decoration: InputDecoration(
-                    labelText: poem.category.isEmpty
-                        ? "Enter category"
-                        : "Change ${poem.category}",
-                  ),
-                ), */
-                  ),
+                  )),
               ElevatedButton(
                 child: const Text('Save'),
                 onPressed: () {
@@ -293,10 +280,8 @@ class MAtoZSlider extends State<AtoZSlider> {
     setState(() {
       var itemToUpdate = poems.value.firstWhere((element) => element.id == id);
 
-      //TODO Update the category of the item
       itemToUpdate.category = newCategory;
-
-      // Update the state to reflect the change in the UI
+      di.get<PoemsScreenLogic>().updatePoem(itemToUpdate);
     });
   }
 
