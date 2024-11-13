@@ -234,9 +234,7 @@ class PoemsScreenLogic {
     if (poem.toString().isNotEmpty) {
       //change thefirst line to allcaps
 
-      databaseHelper.insertPoem(Poem()
-        ..theText = poem
-        ..favourite = true);
+      databaseHelper.insertPoem(Poem()..theText = poem);
       updateListView();
       categoryHasChangedTo(selectedCategory.value);
       //selectedCategoryPoems.value.add(Poem()..theText = poem);
