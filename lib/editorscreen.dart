@@ -107,110 +107,121 @@ class _EditorScreenState extends State<EditorScreen> {
         ],
         automaticallyImplyLeading: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                TextField(
-                  decoration: const InputDecoration(
-                    helperText:
-                        'title in ALLCAPS. Not in poem at the firstline',
-                  ),
-                  controller: contr,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 3,
-                  maxLines: null,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                      poem.favourite ? Icons.favorite : Icons.favorite_border),
-                  onPressed: () {
-                    setState(() {
-                      poem.favourite = !poem.favourite;
-                    });
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.color_lens),
-                  color: poem.level(),
-                  onPressed: () async {
-                    var showlevel = false;
-                    var a = await showDialog<Color>(
-                      context: context,
-                      builder: (context) {
-                        return StatefulBuilder(
-                          builder: (context, setState) {
-                            return SimpleDialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0)),
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextButton(
-                                    child: Text(showlevel ? 'Hide' : 'Show'),
-                                    onPressed: () {
-                                      setState(() {
-                                        showlevel = !showlevel;
-                                      });
-                                    },
-                                  ),
-                                  const Text(
-                                    'Level',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                              children: Constants.levelkleur
-                                  .map((e) => SimpleDialogOption(
-                                        child: CircleAvatar(
-                                          backgroundColor: e,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context, e);
-                                        },
-                                      ))
-                                  .toList(),
-                            );
-                          },
-                        );
-                      },
-                    );
-                    if (a != null) {
-                      setState(() {
-                        poem.levelnr = Constants.levelkleur.indexOf(a);
-                      });
-                    }
-                  },
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.category),
-                      onPressed: () {
-                        showCategoryDialog(poem, context).then((updatedItem) {
-                          if (updatedItem != null) {
-                            setState(() {
-                              poem.category = updatedItem.category;
-                            });
-                          }
-                        });
-                      },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  TextField(
+                    decoration: const InputDecoration(
+                      helperText:
+                          'title in ALLCAPS. Not in poem at the firstline',
                     ),
-                    Text(poem.category),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                    controller: contr,
+                    keyboardType: TextInputType.multiline,
+                    minLines: 3,
+                    maxLines: null,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(poem.favourite
+                        ? Icons.favorite
+                        : Icons.favorite_border),
+                    onPressed: () {
+                      setState(() {
+                        poem.favourite = !poem.favourite;
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.color_lens),
+                    color: poem.level(),
+                    onPressed: () async {
+                      var showlevel = false;
+                      var a = await showDialog<Color>(
+                        context: context,
+                        builder: (context) {
+                          return StatefulBuilder(
+                            builder: (context, setState) {
+                              return SimpleDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      child: Text(showlevel ? 'Hide' : 'Show'),
+                                      onPressed: () {
+                                        setState(() {
+                                          showlevel = !showlevel;
+                                        });
+                                      },
+                                    ),
+                                    const Text(
+                                      'Level',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                                children: Constants.levelkleur
+                                    .map((e) => SimpleDialogOption(
+                                          child: CircleAvatar(
+                                            backgroundColor: e,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context, e);
+                                          },
+                                        ))
+                                    .toList(),
+                              );
+                            },
+                          );
+                        },
+                      );
+                      if (a != null) {
+                        setState(() {
+                          poem.levelnr = Constants.levelkleur.indexOf(a);
+                        });
+                      }
+                    },
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.category),
+                          onPressed: () {
+                            showCategoryDialog(poem, context)
+                                .then((updatedItem) {
+                              if (updatedItem != null) {
+                                setState(() {
+                                  poem.category = updatedItem.category;
+                                });
+                              }
+                            });
+                          },
+                        ),
+                        Flexible(
+                          child: Text(
+                            poem.category,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
