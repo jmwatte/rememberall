@@ -236,6 +236,7 @@ class MAtoZSlider extends State<AtoZSlider> {
                   //how can we do autosuggest in the textfield?
 
                   child: Autocomplete<String>(
+                    initialValue: TextEditingValue(text: poem.category),
                     optionsBuilder: (TextEditingValue value) {
                       if (value.text.isEmpty) {
                         return const Iterable<String>.empty();

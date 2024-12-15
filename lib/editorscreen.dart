@@ -32,7 +32,9 @@ class _EditorScreenState extends State<EditorScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Autocomplete<String>(
+                  initialValue: TextEditingValue(text: poem.category),
                   optionsBuilder: (TextEditingValue value) {
+                    debugPrint('value= ${value.text}');
                     if (value.text.isEmpty) {
                       return const Iterable<String>.empty();
                     } else {
