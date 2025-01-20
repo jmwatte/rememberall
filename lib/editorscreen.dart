@@ -81,7 +81,7 @@ class _EditorScreenState extends State<EditorScreen> {
         title: const Text('edit'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context, poem.theText),
+          onPressed: () => Navigator.pop(context, poem),
         ),
         actions: <Widget>[
           IconButton(

@@ -189,10 +189,9 @@ class MyPoemsState extends State<MyPoems> {
 
   _openeditor(BuildContext context, Poem input) async {
     final result = await Navigator.pushNamed(context, EditorScreen.routeName,
-        arguments: input);
-    if (result is String) {
-      di.get<PoemsScreenLogic>().addNewPoem(result);
-    }
+        arguments: input) as Poem;
+
+    di.get<PoemsScreenLogic>().addNewPoem(result);
   }
 
   _openeditorFaultyInput(BuildContext context, String input) async {

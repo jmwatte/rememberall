@@ -230,11 +230,15 @@ class PoemsScreenLogic {
     return "";
   }
 
-  void addNewPoem(String poem) {
-    if (poem.toString().isNotEmpty) {
+  void addNewPoem(Poem poem) {
+    if (poem.theText.isNotEmpty) {
       //change thefirst line to allcaps
 
-      databaseHelper.insertPoem(Poem()..theText = poem);
+      databaseHelper.insertPoem(Poem()
+        ..theText = poem.theText
+        ..category = poem.category
+        ..levelnr = poem.levelnr
+        ..favourite = poem.favourite);
       updateListView();
       categoryHasChangedTo(selectedCategory.value);
       //selectedCategoryPoems.value.add(Poem()..theText = poem);

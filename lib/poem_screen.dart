@@ -197,19 +197,19 @@ class OnePoemSreenState extends State<OnePoemSreen> {
 
   _goAndEditThePoem(BuildContext context, Poem poem) async {
     final result = await Navigator.pushNamed(context, EditorScreen.routeName,
-        arguments: poem);
+        arguments: poem) as Poem;
     if (kDebugMode) {
       print(' in _goAndEditThePoem() resultaat:$result');
     }
     //update the excisting lyric in the database with the new lyrics
-    if (result is String) {
-      setState(() {
-        if (result.toString().isNotEmpty) {
-          widget.poem.theText = result;
-          helper.updatePoem(widget.poem);
-        }
-      });
-    }
+
+    setState(() {
+      widget.poem.theText = result.theText;
+      widget.poem.category = result.category;
+      widget.poem.favourite = result.favourite;
+      widget.poem.levelnr = result.levelnr;
+      helper.updatePoem(widget.poem);
+    });
   }
 
   // A method that launches the SelectionScreen and awaits the result from
