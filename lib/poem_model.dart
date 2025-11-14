@@ -37,8 +37,10 @@ class Constants {
   ];
   static const List<String> listChoices = <String>[
     importNewPoem,
+    importFromJson,
     aNewPoem,
     exportAllToTxtFile,
+    exportAllToJson,
     toArchive,
     reset,
     category,
@@ -46,7 +48,9 @@ class Constants {
   ];
   static const String aNewPoem = 'New';
   static const String importNewPoem = 'Import';
+  static const String importFromJson = 'Import JSON';
   static const String exportAllToTxtFile = 'ExportAll';
+  static const String exportAllToJson = 'Export JSON';
   static const String toArchive = 'Archiveren';
   static const String reset = 'Reset';
   static const String category = 'Category';

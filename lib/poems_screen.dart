@@ -80,6 +80,49 @@ class MyPoemsState extends State<MyPoems> {
               ],
             );
           });
+    } else if (choice == Constants.exportAllToJson) {
+      String fileName = '';
+
+      return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Export to JSON - Enter File Name'),
+              content: TextField(
+                onChanged: (value) {
+                  fileName = value;
+                },
+                decoration: const InputDecoration(hintText: "File name"),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Export'),
+                  onPressed: () async {
+                    await di.get<PoemsScreenLogic>().exportAllToJson(fileName);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Exported to $fileName.json')),
+                      );
+                    }
+                  },
+                ),
+              ],
+            );
+          });
+    } else if (choice == Constants.importFromJson) {
+      String result = await di.get<PoemsScreenLogic>().importFromJson();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result)),
+        );
+      }
     } else if (choice == Constants.importNewPoem) {
       di.get<PoemsScreenLogic>().openImporter().then((value) {
         if (value != "") {

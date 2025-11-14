@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -167,12 +168,102 @@ class PoemsScreenLogic {
   }
 
   final saver = Saver();
+  
   void exportAllToTxtFile(String fileName) async {
     var archive = await databaseHelper.getPoemsfromDB();
     var archiveInTextFormat = archive
         .map((e) => "****************\n${e.theText.trim()}")
         .join('\n\n');
     saver.save(fileName, archiveInTextFormat);
+  }
+
+  Future<void> exportAllToJson(String fileName) async {
+    var poems = await databaseHelper.getPoemsfromDB();
+    
+    Map<String, dynamic> exportData = {
+      'version': '1.0',
+      'exported_date': DateTime.now().toIso8601String(),
+      'poems': poems.map((poem) => {
+        'id': poem.id,
+        'title': poem.poemTitle(),
+        'text': poem.theText,
+        'category': poem.category,
+        'favourite': poem.favourite,
+        'level': poem.levelnr,
+        'extraVisibleLetters': poem.extraVisibleLetters,
+        'extraVisibleWordsStart': poem.extraVisibleWordsStart,
+        'extraVisibleWordsEnd': poem.extraVisibleWordsEnd,
+        'scramble': poem.scramble.index,
+        'seeEnd': poem.seeEnd,
+        'seeStart': poem.seeStart,
+        'blokker': poem.blokker,
+        'blokkerVowel': poem.blokkerVowel,
+      }).toList(),
+    };
+    
+    String jsonString = jsonEncode(exportData);
+    await saver.saveJson(fileName, jsonString);
+  }
+
+  Future<String> importFromJson() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+      allowMultiple: false,
+    );
+
+    if (result == null || result.files.isEmpty) {
+      return "No file selected";
+    }
+
+    try {
+      final file = File(result.files.first.path!);
+      String jsonString = await file.readAsString();
+      Map<String, dynamic> jsonData = jsonDecode(jsonString);
+
+      if (jsonData['poems'] == null) {
+        return "Invalid JSON format: missing 'poems' field";
+      }
+
+      List<dynamic> poemsJson = jsonData['poems'];
+      int importedCount = 0;
+      
+      for (var poemJson in poemsJson) {
+        try {
+          Poem poem = Poem(
+            theText: poemJson['text'] ?? '',
+            category: poemJson['category'] ?? '',
+            favourite: poemJson['favourite'] ?? false,
+            levelnr: poemJson['level'] ?? 1,
+            extraVisibleLetters: poemJson['extraVisibleLetters'] ?? 1,
+            extraVisibleWordsStart: poemJson['extraVisibleWordsStart'] ?? 1,
+            extraVisibleWordsEnd: poemJson['extraVisibleWordsEnd'] ?? 1,
+            scramble: Scramblemethod.values[poemJson['scramble'] ?? 0],
+            seeEnd: poemJson['seeEnd'] ?? false,
+            seeStart: poemJson['seeStart'] ?? false,
+            blokker: poemJson['blokker'] ?? 'x',
+            blokkerVowel: poemJson['blokkerVowel'] ?? '|',
+          );
+          
+          await databaseHelper.insertPoem(poem);
+          importedCount++;
+        } catch (e) {
+          if (kDebugMode) {
+            print("Error importing poem: $e");
+          }
+        }
+      }
+      
+      updateListView();
+      categoryHasChangedTo('all');
+      
+      return "Successfully imported $importedCount poems";
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error importing JSON: $e");
+      }
+      return "Error importing JSON: $e";
+    }
   }
 
   String normalizeLineEndings(String text) {

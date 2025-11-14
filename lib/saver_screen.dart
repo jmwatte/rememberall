@@ -47,4 +47,14 @@ class Saver {
     }
   */
   }
+
+  saveJson(String filename, String jsonData) async {
+    filename = "$filename.json";
+    Directory? selectedDirectory = await pickSaveDirectory();
+    final file = File('${selectedDirectory?.path}/$filename');
+    await file.writeAsString(jsonData);
+    if (kDebugMode) {
+      print("JSON saved to: ${file.path}");
+    }
+  }
 }
