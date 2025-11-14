@@ -67,9 +67,14 @@ class MAtoZSlider extends State<AtoZSlider> {
 
   void onscrolllistview() {
     if (!_customscrollisscrolling && _animationcounter == 0) {
+      if (!_scrollController.hasClients) return;
+
       var indexFirst = ((_scrollController.offset / _itemsizeheight) %
               poemscache.value.length)
           .floor();
+
+      if (indexFirst < 0 || indexFirst >= poemscache.value.length) return;
+
       /*if (_scrollController.offset > _lastoffset) //Go downward //NOTE: [TO UNCOMMENT TO ADD THE GOING DOWNWARD CHANGING LETTER] (all block)
       {
         var indexLast =
@@ -95,10 +100,12 @@ class MAtoZSlider extends State<AtoZSlider> {
               .toUpperCase()[0];
       var i = _alphabet.indexOf(fletter);
       if (i != -1) {
-        setState(() {
-          _text = _alphabet[i];
-          _offsetContainer = i * _heightscroller;
-        });
+        if (mounted) {
+          setState(() {
+            _text = _alphabet[i];
+            _offsetContainer = i * _heightscroller;
+          });
+        }
       }
       //}
       // _lastoffset = _scrollController.offset; //NOTE: [TO UNCOMMENT TO ADD THE GOING DOWNWARD CHANGING LETTER]
@@ -557,93 +564,118 @@ class MAtoZSlider extends State<AtoZSlider> {
                           poemscache.length < 10
                       ? false
                       : true,
-                  child: GestureDetector(
-                    child: Container(
-                        height: _heightscroller,
-                        margin: EdgeInsets.only(top: _offsetContainer),
-                        child: Container(
-                          //NOTE: this container is the scroll bar it need at least to have height => _heightscroller
-                          width: _heightscroller,
-                          decoration: const BoxDecoration(
-                            color:
-                                Colors.indigo, //NOTE: change color of scroller
-                            shape: BoxShape
-                                .circle, //NOTE: change this to rectangle
-                          ),
-                          child: Text(
-                            _text,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: (_heightscroller - 4),
-                                fontWeight: FontWeight.bold,
-                                color: Colors
-                                    .white), //NOTE: white -> color of text of scroller
-                          ),
-                        )),
-                    onVerticalDragStart: (DragStartDetails details) {
+                  child: Listener(
+                    behavior: HitTestBehavior.translucent,
+                    onPointerDown: (PointerDownEvent event) {
                       _customscrollisscrolling = true;
                     },
-                    onVerticalDragEnd: (DragEndDetails details) {
+                    onPointerUp: (PointerUpEvent event) {
                       _customscrollisscrolling = false;
                     },
-                    onVerticalDragUpdate: (DragUpdateDetails details) {
-                      setState(() {
+                    onPointerCancel: (PointerCancelEvent event) {
+                      _customscrollisscrolling = false;
+                    },
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      child: Container(
+                          height: _heightscroller,
+                          margin: EdgeInsets.only(top: _offsetContainer),
+                          child: Container(
+                            //NOTE: this container is the scroll bar it need at least to have height => _heightscroller
+                            width: _heightscroller,
+                            decoration: const BoxDecoration(
+                              color: Colors
+                                  .indigo, //NOTE: change color of scroller
+                              shape: BoxShape
+                                  .circle, //NOTE: change this to rectangle
+                            ),
+                            child: Text(
+                              _text,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: (_heightscroller - 4),
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors
+                                      .white), //NOTE: white -> color of text of scroller
+                            ),
+                          )),
+                      onVerticalDragStart: (DragStartDetails details) {
+                        _customscrollisscrolling = true;
+                      },
+                      onVerticalDragEnd: (DragEndDetails details) {
+                        _customscrollisscrolling = false;
+                      },
+                      onVerticalDragUpdate: (DragUpdateDetails details) {
                         if ((_offsetContainer + details.delta.dy) >= 0 &&
                             (_offsetContainer + details.delta.dy) <=
                                 (_sizeheightcontainer - _heightscroller)) {
                           _offsetContainer += details.delta.dy;
-                          _text = _alphabet[
-                              ((_offsetContainer / _heightscroller) %
-                                      _alphabet.length)
-                                  .round()];
-                          if (kDebugMode) {
-                            print("in onVerticalDragEnd: $_text $_oldtext");
-                          }
-                          if (_text != _oldtext) {
+                          var newIndex = ((_offsetContainer / _heightscroller) %
+                                  _alphabet.length)
+                              .round();
+                          var newText = _alphabet[newIndex];
+
+                          if (newText != _oldtext) {
+                            _oldtext = newText;
+                            _text = newText;
+
                             if (_text == '*') {
                               var i = 0;
                               _animationcounter++;
-                              _scrollController
-                                  .animateTo(
-                                      (i * _itemsizeheight)
-                                          .toDouble(), //NOTE: To configure the animation
-                                      duration:
-                                          const Duration(milliseconds: 500),
-                                      curve: Curves.ease)
-                                  .then((x) => {_animationcounter--});
+                              if (_scrollController.hasClients && mounted) {
+                                _scrollController
+                                    .animateTo((i * _itemsizeheight).toDouble(),
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        curve: Curves.easeOut)
+                                    .then((x) {
+                                  _animationcounter--;
+                                }).catchError((e) {
+                                  _animationcounter--;
+                                });
+                              } else {
+                                _animationcounter--;
+                              }
                             } else {
-                              for (var i = numOfFav;
-                                  i < poemscache.length;
-                                  i++) {
-                                if (poemscache[i]
-                                        .poemTitle()
-                                        .toString()
-                                        .trim()
-                                        .isNotEmpty &&
-                                    poemscache[i]
-                                            .poemTitle()
-                                            .toString()
-                                            .trim()
-                                            .toUpperCase()[0] ==
-                                        _text.toString().toUpperCase()[0]) {
-                                  _animationcounter++;
-                                  _scrollController
-                                      .animateTo(
-                                          (i * _itemsizeheight)
-                                              .toDouble(), //NOTE: To configure the animation
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          curve: Curves.ease)
-                                      .then((x) => {_animationcounter--});
-                                  break;
+                              // Search through ALL items
+                              for (var i = 0; i < poemscache.length; i++) {
+                                var title =
+                                    poemscache[i].poemTitle().toString().trim();
+                                if (title.isNotEmpty) {
+                                  var firstLetter =
+                                      removeDiacritics(title.toUpperCase()[0]);
+                                  if (firstLetter ==
+                                      _text.toString().toUpperCase()[0]) {
+                                    _animationcounter++;
+                                    if (_scrollController.hasClients &&
+                                        mounted) {
+                                      _scrollController
+                                          .animateTo(
+                                              (i * _itemsizeheight).toDouble(),
+                                              duration: const Duration(
+                                                  milliseconds: 200),
+                                              curve: Curves.easeOut)
+                                          .then((x) {
+                                        _animationcounter--;
+                                      }).catchError((e) {
+                                        _animationcounter--;
+                                      });
+                                    } else {
+                                      _animationcounter--;
+                                    }
+                                    break;
+                                  }
                                 }
                               }
-                              _oldtext = _text;
                             }
                           }
+
+                          setState(() {
+                            // Update UI
+                          });
                         }
-                      });
-                    },
+                      },
+                    ),
                   ),
                 )
               ])),
