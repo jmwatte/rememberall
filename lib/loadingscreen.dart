@@ -11,7 +11,7 @@ class LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var displayStringShort =
         displayString.substring(0, min(displayString.length, 40));
-    double fontSize = 200.0 - (displayStringShort.length * 5.0);
+    double fontSize = (200.0 - (displayStringShort.length * 5.0)).clamp(1.0, 200.0);
     return Padding(
       padding: const EdgeInsets.all(0.0),
       child: Container(
@@ -22,7 +22,7 @@ class LoadingScreen extends StatelessWidget {
           child: Text(
             displayStringShort,
             style: TextStyle(
-                fontSize: fontSize == 0 ? 1 : fontSize, color: Colors.white),
+                fontSize: fontSize, color: Colors.white),
           ),
         ),
       ),

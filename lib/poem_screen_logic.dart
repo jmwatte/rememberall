@@ -49,10 +49,10 @@ class PoemScreenLogic extends ChangeNotifier {
     }
   }
   Future<void> _initConnectivity() async {
-    connectionStatus.value = await Connectivity().checkConnectivity();
     ConnectivityResult result = ConnectivityResult.none;
     try {
-      result = await (Connectivity().checkConnectivity());
+      final results = await Connectivity().checkConnectivity();
+      result = results.isNotEmpty ? results.first : ConnectivityResult.none;
     } catch (e) {
       if (kDebugMode) {
         print("in _initConnectivity() Error: $e");

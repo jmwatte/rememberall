@@ -23,6 +23,7 @@ class DatabaseHelper {
   String colCategory = 'category';
   String colBlokker = 'blokker';
   String colBlokkerVowel = 'blokkerVowel';
+  String colSortOrder = 'sortOrder';
 
   DatabaseHelper._createInstance(); // Named constructor to create instance of DatabaseHelper
 
@@ -43,13 +44,19 @@ class DatabaseHelper {
 
     // Open/create the database at a given path
     var poemsDatabase =
-        await openDatabase(path, version: 1, onCreate: _createDb);
+        await openDatabase(path, version: 2, onCreate: _createDb, onUpgrade: _upgradeDb);
     return poemsDatabase;
   }
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $poemsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colInput TEXT,$colFavourite INTEGER, $colLevel INTEGER,$colExtraletters INTEGER,$colExtrawordsStart INTEGER,$colExtrawordsEnd INTEGER,$colScramble INTEGER,$colSeeend INTEGER,$colSeestart INTEGER,$colCategory TEXT, $colBlokker TEXT,$colBlokkerVowel TEXT)');
+        'CREATE TABLE $poemsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colInput TEXT,$colFavourite INTEGER, $colLevel INTEGER,$colExtraletters INTEGER,$colExtrawordsStart INTEGER,$colExtrawordsEnd INTEGER,$colScramble INTEGER,$colSeeend INTEGER,$colSeestart INTEGER,$colCategory TEXT, $colBlokker TEXT,$colBlokkerVowel TEXT,$colSortOrder INTEGER DEFAULT 0)');
+  }
+
+  void _upgradeDb(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE $poemsTable ADD COLUMN $colSortOrder INTEGER DEFAULT 0');
+    }
   }
 
   Future<List<String>> getDistinctCategories() async {
@@ -74,7 +81,7 @@ class DatabaseHelper {
       poemsTable,
       where: '$colCategory = ?',
       whereArgs: [category],
-      orderBy: '$colInput ASC', // Sort by title in ascending order
+      orderBy: '$colSortOrder ASC, $colInput ASC',
     );
     return List.generate(maps.length, (i) => Poem.fromMap(maps[i]));
   }
@@ -133,9 +140,13 @@ class DatabaseHelper {
   // Delete Operation: Delete a lyric object from database
   Future<int> deletePoemByID(int id) async {
     var db = await database;
-    int result =
-        await db.rawDelete('DELETE FROM $poemsTable WHERE $colId = $id');
+    int result = await db.delete(poemsTable, where: '$colId = ?', whereArgs: [id]);
     return result;
+  }
+
+  Future<int> deleteAllPoems() async {
+    var db = await database;
+    return await db.delete(poemsTable);
   }
 
   // Get number of lyric objects in database
@@ -165,8 +176,22 @@ class DatabaseHelper {
   void removeCategoryFromDataBase(String categoryName) async {
     final db = await database;
     await db.rawUpdate(
-      'UPDATE $poemsTable SET $colCategory = NULL WHERE $colCategory = ?',
-      [categoryName],
+      'UPDATE $poemsTable SET $colCategory = ? WHERE $colCategory = ?',
+      ['', categoryName],
     );
+  }
+
+  Future<void> updateSortOrders(List<Poem> poems) async {
+    final db = await database;
+    final batch = db.batch();
+    for (int i = 0; i < poems.length; i++) {
+      batch.update(
+        poemsTable,
+        {colSortOrder: i},
+        where: '$colId = ?',
+        whereArgs: [poems[i].id],
+      );
+    }
+    await batch.commit(noResult: true);
   }
 }

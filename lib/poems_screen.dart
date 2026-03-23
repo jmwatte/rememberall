@@ -141,7 +141,7 @@ class MyPoemsState extends State<MyPoems> {
         Poem()..theText = '',
       );
     } else if (choice == Constants.reset) {
-      di.get<PoemsScreenLogic>().resetToFirstRun();
+      di.get<PoemsScreenLogic>().resetToFirstRun(context);
     } else if (choice == Constants.category) {
       _openCategory(context);
     } else if (choice == Constants.usePrefs) {
@@ -332,11 +332,38 @@ class MyPoemsState extends State<MyPoems> {
     //  var selectedCategoryPoems =
     //    watchValue((PoemsScreenLogic s) => s.selectedCategoryPoems);
     var titleText = watchValue((PoemsScreenLogic s) => s.appBarTitle);
+    var isReorderMode = watchValue((PoemsScreenLogic s) => s.reorderMode);
+    var isTitleScrambled = watchValue((PoemsScreenLogic s) => s.titleScrambleEnabled);
 
     return Scaffold(
         appBar: AppBar(
           title: Text(titleText),
           actions: <Widget>[
+            // Title scramble toggle
+            IconButton(
+              icon: Icon(
+                Icons.visibility_off,
+                color: isTitleScrambled ? Colors.orange : null,
+              ),
+              tooltip: 'Hide/show titles',
+              onPressed: () {
+                di.get<PoemsScreenLogic>().titleScrambleEnabled.value =
+                    !di.get<PoemsScreenLogic>().titleScrambleEnabled.value;
+              },
+              onLongPress: () => _showTitleScrambleOptions(context),
+            ),
+            // Reorder mode toggle
+            IconButton(
+              icon: Icon(
+                Icons.reorder,
+                color: isReorderMode ? Colors.blue : null,
+              ),
+              tooltip: 'Reorder poems',
+              onPressed: () {
+                di.get<PoemsScreenLogic>().reorderMode.value =
+                    !di.get<PoemsScreenLogic>().reorderMode.value;
+              },
+            ),
             PopupMenuButton<String>(
               onSelected: choiceAction,
               itemBuilder: (BuildContext context) {
@@ -352,6 +379,72 @@ class MyPoemsState extends State<MyPoems> {
         ),
 
         //test
-        body: createCategoryWidget());
+        body: SafeArea(child: createCategoryWidget()));
+  }
+
+  void _showTitleScrambleOptions(BuildContext context) {
+    final logic = di.get<PoemsScreenLogic>();
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Title Scramble Options',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  SwitchListTile(
+                    title: const Text('Hide first letter'),
+                    value: logic.titleHideFirstLetter.value,
+                    onChanged: (v) {
+                      setModalState(() {
+                        logic.titleHideFirstLetter.value = v;
+                      });
+                    },
+                  ),
+                  const Divider(),
+                  const Text('Scramble method:'),
+                  RadioListTile<Scramblemethod>(
+                    title: const Text('Hide all letters'),
+                    value: Scramblemethod.xForAll,
+                    groupValue: logic.titleScrambleMethod.value,
+                    onChanged: (v) {
+                      setModalState(() {
+                        logic.titleScrambleMethod.value = v!;
+                      });
+                    },
+                  ),
+                  RadioListTile<Scramblemethod>(
+                    title: const Text('Hide vowels only'),
+                    value: Scramblemethod.xForVowels,
+                    groupValue: logic.titleScrambleMethod.value,
+                    onChanged: (v) {
+                      setModalState(() {
+                        logic.titleScrambleMethod.value = v!;
+                      });
+                    },
+                  ),
+                  RadioListTile<Scramblemethod>(
+                    title: const Text('Hide consonants only'),
+                    value: Scramblemethod.xForConsonants,
+                    groupValue: logic.titleScrambleMethod.value,
+                    onChanged: (v) {
+                      setModalState(() {
+                        logic.titleScrambleMethod.value = v!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }

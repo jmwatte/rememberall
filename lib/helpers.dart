@@ -9,6 +9,7 @@ import 'package:watch_it/watch_it.dart';
 
 List<Poem> getPoemsFromString(String poemsString, bool favourite) {
   var result = <Poem>[];
+  poemsString = poemsString.replaceAll('\r\n', '\n');
   var catchPoem =
       RegExp(r'(?<=^\*+\n)(.*?)(?=\n^\*+)', multiLine: true, dotAll: true);
   // var catchPoem = RegExp(
@@ -81,8 +82,8 @@ class FirstRunScreen extends StatelessWidget {
             fit: BoxFit.fill,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                backgroundColor: WidgetStateProperty.all(Colors.blue),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
@@ -98,9 +99,7 @@ class FirstRunScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 'Fill\n Database',
                 style: TextStyle(
-                  fontSize: displayStringShort('Fill the Database') == 0
-                      ? 1
-                      : displayStringShort('Fill the Database'),
+                  fontSize: displayStringShort('Fill the Database').clamp(1.0, 300.0),
                   color: Colors.white,
                 ),
               ),
@@ -111,8 +110,8 @@ class FirstRunScreen extends StatelessWidget {
             fit: BoxFit.fill,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                backgroundColor: WidgetStateProperty.all(Colors.blue),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
@@ -130,9 +129,7 @@ class FirstRunScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 'Empty\n Database',
                 style: TextStyle(
-                  fontSize: displayStringShort('Clean Database') == 0
-                      ? 1
-                      : displayStringShort('Clean Database'),
+                  fontSize: displayStringShort('Clean Database').clamp(1.0, 300.0),
                   color: Colors.white,
                 ),
               ),

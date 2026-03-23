@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.9.22'
     repositories {
         google()
         mavenCentral()
@@ -20,8 +20,14 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
+    afterEvaluate {
+        if (it.hasProperty('android') && it.android.namespace == null) {
+            def manifest = file("${it.projectDir}/src/main/AndroidManifest.xml")
+            if (manifest.exists()) {
+                it.android.namespace = new XmlSlurper().parse(manifest).@package.toString()
+            }
+        }
+    }
     project.evaluationDependsOn(':app')
 }
 

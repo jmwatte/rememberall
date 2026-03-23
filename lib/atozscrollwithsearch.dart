@@ -372,6 +372,10 @@ class MAtoZSlider extends State<AtoZSlider> {
     //   watchValue((PoemsScreenLogic logic) => logic.selectedCategoryPoems);
     var poemscache = watchValue((PoemsScreenLogic logic) => logic.poemscache);
     var numOfFav = watchValue((PoemsScreenLogic logic) => logic.numOfFav);
+    watchValue((PoemsScreenLogic logic) => logic.reorderMode);
+    watchValue((PoemsScreenLogic logic) => logic.titleScrambleEnabled);
+    watchValue((PoemsScreenLogic logic) => logic.titleScrambleMethod);
+    watchValue((PoemsScreenLogic logic) => logic.titleHideFirstLetter);
     return LayoutBuilder(builder: (context, constraints) {
       _heightscroller = (constraints.biggest.height - _sizefirstitem) /
           _alphabet
@@ -414,10 +418,37 @@ class MAtoZSlider extends State<AtoZSlider> {
                   _sizeheightcontainer, //NOTE: Here is were is set the size of the listview
               child: Stack(alignment: Alignment.topRight, children: [
                 //NOTE: Here to add some other components (but you need to remove they height from calcs (line above))
-                StreamBuilder<Object>(
-                    stream: null,
-                    builder: (context, snapshot) {
-                      return ListView.builder(
+                logic.reorderMode.value
+                    ? ReorderableListView.builder(
+                        scrollController: _scrollController,
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 28),
+                        itemCount: poemscache.length,
+                        onReorder: (oldIndex, newIndex) {
+                          logic.onReorder(oldIndex, newIndex);
+                        },
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                            key: ValueKey(poemscache[index].id),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            leading: CircleAvatar(
+                              backgroundColor: poemscache[index].level(),
+                              child: poemscache[index].favourite
+                                  ? const Icon(Icons.star)
+                                  : null,
+                            ),
+                            title: Text(
+                              logic.getDisplayTitle(poemscache[index]),
+                              style: TextStyle(fontSize: _itemfontsize),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                            trailing: const Icon(Icons.drag_handle),
+                            onTap: () => onItemClick(index),
+                          );
+                        },
+                      )
+                    : ListView.builder(
                         controller: _scrollController,
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 28),
                         itemExtent: _itemsizeheight,
@@ -534,7 +565,7 @@ class MAtoZSlider extends State<AtoZSlider> {
                                   ),
                                 ),
                                 title: Text(
-                                  poemscache[index].poemTitle().toString(),
+                                  logic.getDisplayTitle(poemscache[index]),
                                   style: TextStyle(fontSize: _itemfontsize),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
@@ -556,8 +587,7 @@ class MAtoZSlider extends State<AtoZSlider> {
                             ///
                           );
                         },
-                      );
-                    }),
+                      ),
                 Visibility(
                   visible: _focusNode.hasFocus ||
                           _searchtext.isNotEmpty ||

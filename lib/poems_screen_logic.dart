@@ -10,6 +10,7 @@ import 'package:rememberall2/poem_model.dart';
 import 'package:rememberall2/main.dart';
 import 'package:rememberall2/saver_screen.dart';
 import 'package:rememberall2/poems_collection.dart';
+import 'package:rememberall2/scramble_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -31,6 +32,12 @@ class PoemsScreenLogic {
   final whatWeGotAlso = ValueNotifier<String>('Select a category');
   // final songpieces = ValueNotifier<List<LyricsTransformer>>([]);
   final selectedCategoryPoems = ValueNotifier<List<Poem>>([]);
+
+  // Reorder mode & title scramble state
+  final reorderMode = ValueNotifier<bool>(false);
+  final titleScrambleEnabled = ValueNotifier<bool>(false);
+  final titleScrambleMethod = ValueNotifier<Scramblemethod>(Scramblemethod.xForAll);
+  final titleHideFirstLetter = ValueNotifier<bool>(false);
 
   List<Poem> firstRunPoemsPieces = [];
   //List<LyricsTransformer> songsfromdatabase = [];
@@ -338,9 +345,21 @@ class PoemsScreenLogic {
     }
   }
 
-  void resetToFirstRun() async {
+  Future<void> resetToFirstRun(BuildContext context) async {
+    await databaseHelper.deleteAllPoems();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isFirstRun', true);
+    isFirstRun.value = true;
+    fillDatabase.value = false;
+    poemscache.value = [];
+    selectedCategoryPoems.value = [];
+    categories.value = ['all'];
+    numOfFav.value = 0;
+    whatWeGot.value = 'No files yet';
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const FirstRunScreen()),
+      (route) => false,
+    );
   }
 
   void onRenameCategory(String oldName, String newName) {
@@ -408,8 +427,16 @@ class PoemsScreenLogic {
     }
 
     final stopwatch = Stopwatch()..start();
-    selectedCategoryPoems.value
-        .sort((a, b) => a.poemTitle().compareTo(b.poemTitle()));
+
+    // Check if any poems have a custom sort order
+    bool hasCustomOrder = selectedCategoryPoems.value.any((p) => p.sortOrder > 0);
+    if (hasCustomOrder) {
+      selectedCategoryPoems.value
+          .sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+    } else {
+      selectedCategoryPoems.value
+          .sort((a, b) => a.poemTitle().compareTo(b.poemTitle()));
+    }
 
 // Partition items into favorites and non-favorites
     var fav = <Poem>[];
@@ -423,7 +450,9 @@ class PoemsScreenLogic {
     }
 
     numOfFav.value = fav.length;
-    var orderedList = fav.followedBy(notfav).toList();
+    var orderedList = hasCustomOrder
+        ? selectedCategoryPoems.value.toList()
+        : fav.followedBy(notfav).toList();
     poemscache.value = orderedList;
     if (isDebugMode) {
       if (kDebugMode) {
@@ -489,6 +518,32 @@ class PoemsScreenLogic {
   }
 
   void toArchive() {}
+
+  void onReorder(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) newIndex--;
+    final list = List<Poem>.from(poemscache.value);
+    final item = list.removeAt(oldIndex);
+    list.insert(newIndex, item);
+    // Update sortOrder on each poem
+    for (int i = 0; i < list.length; i++) {
+      list[i].sortOrder = i;
+    }
+    poemscache.value = list;
+    selectedCategoryPoems.value = List.from(list);
+    databaseHelper.updateSortOrders(list);
+  }
+
+  String getDisplayTitle(Poem poem) {
+    String title = poem.poemTitle();
+    if (titleScrambleEnabled.value) {
+      return scrambleText(
+        title,
+        titleScrambleMethod.value,
+        hideFirstLetter: titleHideFirstLetter.value,
+      );
+    }
+    return title;
+  }
 }
 
 class CategoriesNotifier extends ValueNotifier<List<String>> {

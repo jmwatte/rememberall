@@ -250,40 +250,6 @@ class OnePoemSreenState extends State<OnePoemSreen> {
     widget.poem.seeEnd = !widget.poem.seeEnd;
   }
 
-  var cycler = di.get<PoemScreenLogic>().cycler.value;
-  // void _pickTheScrambleMethod() {
-
-  //   setState(() {
-  //     cycler++;
-  //     if (cycler > 2) {
-  //       cycler = 0;
-  //     }
-  //     Scramblemethod choosenScrambleMethod;
-  //     switch (cycler) {
-  //       case 0:
-  //         choosenScrambleMethod = Scramblemethod.xForAll;
-
-  //         di.get<PoemScreenLogic>().cycleColor.value = Colors.red;
-  //         break;
-  //       case 1:
-  //         choosenScrambleMethod = Scramblemethod.xForConsonants;
-  //         di.get<PoemScreenLogic>().cycleColor.value = Colors.orange;
-
-  //         break;
-  //       case 2:
-  //         choosenScrambleMethod = Scramblemethod.xForVowels;
-  //         di.get<PoemScreenLogic>().cycleColor.value = Colors.green;
-  //         break;
-  //       default:
-  //         choosenScrambleMethod = Scramblemethod.xForAll;
-  //         di.get<PoemScreenLogic>().cycleColor.value = Colors.red;
-  //     }
-  //     di.get<PoemScreenLogic>().cycler.value = cycler;
-  //     widget.poem.scramble = choosenScrambleMethod;
-  //     di.get<PoemScreenLogic>().scrambleMethod.value = choosenScrambleMethod;
-  //   });
-  // }
-
   void _showPoems() {
     setState(() {
       isvisible = !isvisible;
@@ -324,67 +290,45 @@ class OnePoemSreenState extends State<OnePoemSreen> {
 
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Flexible(
-              child: IconButton(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(
                   icon: const Icon(Icons.logout),
                   color: isStartToggled ? Colors.red : null,
                   onPressed: _toggleStart),
-            ),
-            Visibility(
-              visible: isStartToggled,
-              child: Flexible(
-                child: IconButton(
+              if (isStartToggled) ...[
+                IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: _incrementCounterStart),
-              ),
-            ),
-            Visibility(
-              visible: isStartToggled,
-              child: Flexible(
-                child: IconButton(
+                IconButton(
                     icon: const Icon(Icons.remove),
                     onPressed: _decrementCounterStart),
-              ),
-            ),
-            Flexible(
-              child: IconButton(
+              ],
+              IconButton(
                   icon: const Icon(Icons.line_weight),
                   color: cycleColor,
                   onPressed: di.get<PoemScreenLogic>().pickTheScrambleMethod),
-            ),
-            Flexible(
-              child: IconButton(
+              IconButton(
                   icon: const Icon(Icons.double_arrow),
                   color: isVisibilityFirstLetterToggled ? Colors.red : null,
                   onPressed: _hideFirstLetter),
-            ),
-            Visibility(
-              visible: isEndToggled,
-              child: Flexible(
-                child: IconButton(
+              if (isEndToggled) ...[
+                IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: _incrementCounterEnd),
-              ),
-            ),
-            Visibility(
-              visible: isEndToggled,
-              child: Flexible(
-                child: IconButton(
+                IconButton(
                     icon: const Icon(Icons.remove),
                     onPressed: _decrementCounterEnd),
-              ),
-            ),
-            Flexible(
-              child: IconButton(
+              ],
+              IconButton(
                   icon: const Icon(Icons.login),
                   color: isEndToggled ? Colors.red : null,
                   onPressed: _toggleEnd),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       appBar: AppBar(
@@ -407,19 +351,21 @@ class OnePoemSreenState extends State<OnePoemSreen> {
         automaticallyImplyLeading: true,
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RichText(
-                text: TextSpan(
-                    text: isvisible
-                        ? di.get<PoemScreenLogic>().poemText()
-                        : di.get<PoemScreenLogic>().transformed(),
-                    style: GoogleFonts.getFont(_selectedFont,
-                        color: Colors.black, fontSize: 14.0))),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RichText(
+                  text: TextSpan(
+                      text: isvisible
+                          ? di.get<PoemScreenLogic>().poemText()
+                          : di.get<PoemScreenLogic>().transformed(),
+                      style: GoogleFonts.getFont(_selectedFont,
+                          color: Colors.black, fontSize: 16.0))),
+            ],
+          ),
         ),
       ),
 

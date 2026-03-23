@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 class Constants {
@@ -59,44 +58,6 @@ class Constants {
 
 class CutUpPoemSheet {}
 
-// var catchPoem = RegExp(
-//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=(^[^\s][^.][^a-z\n]*\n+))''',
-//     multiLine: true);
-// var catchPoem = RegExp(
-//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
-//     multiLine: true);
-// var catchPoem = RegExp(
-//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
-//     multiLine: true);
-// var catchPoem = RegExp(
-//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=(^[^\s][^.][^a-z\n]*\n+)|$)''',
-//     multiLine: true);
-// var catchPoem = RegExp(
-//     r'''^[^\s][^.][^a-z\n]*\n+((\n|.)*?)(?=^[^\s][^.][^a-z\n]*\n+)''',
-//     multiLine: true);
-// var catchPoem =
-//     RegExp(r'''^(.*?[A-Z]+\n)((.|\n)*?)(?=\n.*?[A-Z]+\n|$)''', multiLine: true);
-// var catchPoem = RegExp(r'''^(.*?[A-Z]+\n)((.|\n)*?)(?=\n\n.*?[A-Z]+\n|\Z)''',
-//     multiLine: true);
-// var catchPoem = RegExp(r'''(.*?[A-Z]+\n)((.|\n)*?)(?=(\n.*?[A-Z]+\n)|\Z)''',
-//     multiLine: true);
-// var catchPoem = RegExp(
-//     r'''(^[A-Z\s:\n!?,.0-9()]+)((.|\n)*?)(?=(\n[A-Z\s:\n!?,.0-9()]+)|\Z)''',
-//     multiLine: true);
-// var catchPoem = RegExp(
-//     r'''(^[\sA-Z!?,.0-9():]+\n)((.|\n)*?)(?=\n[\sA-Z!?,.0-9():]+\n|$)''',
-//     multiLine: true);
-// var catchPoem = RegExp(
-//     r'''(^[\sA-Z!?,.0-9():]+\n)((.|\n)*?)(?=(\n[\sA-Z!?,.0-9():]+\n|$))''',
-//     multiLine: true);
-// var catchPoem =
-//     RegExp(r'''(?!^\n)(^[^a-z].*$\n[\s|\S]*?(?=[A-Z]|\z))''', multiLine: true);
-//var catchPoem = RegExp(r'''(?<=\*)([\s\S]*)(?=\*|\z)''', multiLine: true);
-
-/* RegExp catchSong = RegExp(
-    r'''(?<=(\n\s*\n\s*))^[A-Z0-9(][^a-z]{2}.+((?:\n|.)*?)(?=($(?![\r\n]))|(\n\s*\n\s*)[A-Z0-9(][^a-z]{2}(.|\n+))''',
-    multiLine: true);
- */ //RegExp catchSong=RegExp( r'^[a-z]+[a-z\s][a-z\s]+[\s\s]+?(?=^[a-z]+[a-z\s][a-z\s])',multiLine: true);
 enum Linetransform { first, last }
 
 enum Scramblemethod {
@@ -120,6 +81,7 @@ class Poem {
   String blokker = 'x';
   String blokkerVowel = '|';
   String category = '';
+  int sortOrder = 0;
 
   // Constructor
   Poem({
@@ -136,6 +98,7 @@ class Poem {
     this.blokker = 'x',
     this.blokkerVowel = '|',
     this.category = '',
+    this.sortOrder = 0,
   });
 
 //a method copywith that takesa LyriscTransFormer and a field and a value and returns a new LyricsTransformer with the field set to the value
@@ -153,6 +116,7 @@ class Poem {
     String? category,
     String? blokker,
     String? blokkerVowel,
+    int? sortOrder,
   }) {
     return Poem(
       id: id ?? this.id,
@@ -169,6 +133,7 @@ class Poem {
       category: category ?? this.category,
       blokker: blokker ?? this.blokker,
       blokkerVowel: blokkerVowel ?? this.blokkerVowel,
+      sortOrder: sortOrder ?? this.sortOrder,
     );
   }
 
@@ -188,6 +153,7 @@ class Poem {
     map['category'] = category;
     map['blokker'] = blokker;
     map['blokkerVowel'] = blokkerVowel;
+    map['sortOrder'] = sortOrder;
     return map;
   }
 
@@ -206,6 +172,7 @@ class Poem {
     category = map['category'] ?? '';
     blokker = map['blokker'] ?? 'x';
     blokkerVowel = map['blokkerVowel'] ?? '|';
+    sortOrder = map['sortOrder'] ?? 0;
   }
 
   late int key;
@@ -214,64 +181,12 @@ class Poem {
     return Constants.levelkleur[levelnr];
   }
 
-  var regExpForAll = RegExp('[a-zA-Z0-9]');
-  var regExpForConsonants =
-      RegExp('[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]'); //'^.'
-
-  var regExpForXesForVowels = RegExp('[aeiuo]');
-  //scramblemethod scramble = scramblemethod.xForAll;
-  var scrambler = RegExp('[a-zA-Z0-9]');
-  //bool seeEnd = false;
-  //bool seeStart = false;
   String poemTitle() {
     return theText.split('\n')[0];
   }
 
   String poemText() {
     return theText.split('\n').sublist(1).join('\n');
-  }
-
-  //linetransform changeline;
-
-  String transformed() {
-    switch (scramble) {
-      case Scramblemethod.xForAll:
-        scrambler = regExpForAll;
-        break;
-      case Scramblemethod.xForConsonants:
-        scrambler = regExpForConsonants;
-        break;
-      case Scramblemethod.xForVowels:
-        scrambler = regExpForXesForVowels;
-        break;
-      default:
-        scrambler = regExpForAll;
-    }
-    var theLines = poemText().split('\n');
-    var res = '';
-    for (var y = 0; y < theLines.length; y++) {
-      var theWords = theLines[y].split(' ');
-      for (var i = 0; i < theWords.length; i++) {
-        if (i < 0 + extraVisibleWordsStart && seeStart == true ||
-            i > theWords.length - extraVisibleWordsEnd - 1 && seeEnd == true) {
-          res = '$res${theWords[i]} ';
-        } else {
-          res =
-              '$res${theWords[i].substring(0, min(extraVisibleLetters, theWords[i].length))}${theWords[i].substring(min(extraVisibleLetters, theWords[i].length)).replaceAllMapped(scrambler, (match) {
-            if ('aeiouAEIOU'.contains(match[0]!)) {
-              return blokkerVowel;
-            } else {
-              return blokker;
-            }
-          })} ';
-          //  res =
-          //    '$res${theWords[i].substring(0, min(extraVisibleLetters, theWords[i].length))}${theWords[i].substring(min(extraVisibleLetters, theWords[i].length)).replaceAll(scrambler, blokker)} ';
-          // ' ';
-        }
-      }
-      res = '$res\n';
-    }
-    return (res);
   }
 }
 
