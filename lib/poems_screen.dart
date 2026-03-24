@@ -10,6 +10,8 @@ import 'package:rememberall2/atozscrollwithsearch.dart';
 import 'package:rememberall2/editorscreen.dart';
 import 'package:rememberall2/poem_model.dart';
 import 'package:rememberall2/categorylist_screen.dart';
+import 'package:rememberall2/random_practice_logic.dart';
+import 'package:rememberall2/random_practice_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/watch_it.dart';
 //import 'main.dart';
@@ -351,6 +353,20 @@ class MyPoemsState extends State<MyPoems> {
                     !di.get<PoemsScreenLogic>().titleScrambleEnabled.value;
               },
               onLongPress: () => _showTitleScrambleOptions(context),
+            ),
+            // Random practice
+            IconButton(
+              icon: const Icon(Icons.shuffle),
+              tooltip: 'Random practice',
+              onPressed: () {
+                final poems = di.get<PoemsScreenLogic>().selectedCategoryPoems.value;
+                if (poems.isEmpty) return;
+                di.get<RandomPracticeLogic>().start(poems);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RandomPracticeScreen()),
+                );
+              },
             ),
             // Reorder mode toggle
             IconButton(
