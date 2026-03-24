@@ -377,9 +377,9 @@ class MAtoZSlider extends State<AtoZSlider> {
     watchValue((PoemsScreenLogic logic) => logic.titleScrambleMethod);
     watchValue((PoemsScreenLogic logic) => logic.titleHideFirstLetter);
     return LayoutBuilder(builder: (context, constraints) {
-      _heightscroller = (constraints.biggest.height - _sizefirstitem) /
+      _heightscroller = ((constraints.biggest.height - _sizefirstitem) /
           _alphabet
-              .length; //NOTE: Here the contrainsts.biggest.height is the height of the list (height of body)
+              .length).clamp(24.0, 48.0); //NOTE: clamped to keep thumb a consistent, usable size
       _sizeheightcontainer = constraints.biggest.height -
           _sizefirstitem; //NOTE: Here i'm substracting the size of the container above of the listView
       return Column(children: [
@@ -612,7 +612,7 @@ class MAtoZSlider extends State<AtoZSlider> {
                           margin: EdgeInsets.only(top: _offsetContainer),
                           child: Container(
                             //NOTE: this container is the scroll bar it need at least to have height => _heightscroller
-                            width: _heightscroller,
+                            width: 36.0,
                             decoration: const BoxDecoration(
                               color: Colors
                                   .indigo, //NOTE: change color of scroller
@@ -623,7 +623,7 @@ class MAtoZSlider extends State<AtoZSlider> {
                               _text,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: (_heightscroller - 4),
+                                  fontSize: (_heightscroller - 4).clamp(12.0, 20.0),
                                   fontWeight: FontWeight.bold,
                                   color: Colors
                                       .white), //NOTE: white -> color of text of scroller
