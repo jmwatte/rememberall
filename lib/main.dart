@@ -8,6 +8,7 @@ import 'package:rememberall2/poem_screen_logic.dart';
 import 'package:rememberall2/poems_screen.dart';
 import 'package:rememberall2/poems_screen_logic.dart';
 import 'package:rememberall2/random_practice_logic.dart';
+import 'package:rememberall2/recall_practice_logic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/watch_it.dart';
 import 'editorscreen.dart';
@@ -33,6 +34,7 @@ Future<void> setup() async {
   di.registerLazySingleton<PoemsScreenLogic>(() => PoemsScreenLogic());
   di.registerLazySingleton<BlokkerScreenLogic>(() => BlokkerScreenLogic());
   di.registerLazySingleton<RandomPracticeLogic>(() => RandomPracticeLogic());
+  di.registerLazySingleton<RecallPracticeLogic>(() => RecallPracticeLogic());
   SharedPreferences prefs = await SharedPreferences.getInstance();
   di.get<PoemScreenLogic>().useSharedPrefs = prefs.getBool('usePrefs') ?? false;
   isFirstRun = prefs.getBool('isFirstRun') ?? true;

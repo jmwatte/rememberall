@@ -12,6 +12,8 @@ import 'package:rememberall2/poem_model.dart';
 import 'package:rememberall2/categorylist_screen.dart';
 import 'package:rememberall2/random_practice_logic.dart';
 import 'package:rememberall2/random_practice_screen.dart';
+import 'package:rememberall2/recall_practice_logic.dart';
+import 'package:rememberall2/recall_practice_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/watch_it.dart';
 //import 'main.dart';
@@ -353,6 +355,20 @@ class MyPoemsState extends State<MyPoems> {
                     !di.get<PoemsScreenLogic>().titleScrambleEnabled.value;
               },
               onLongPress: () => _showTitleScrambleOptions(context),
+            ),
+            // Recall practice
+            IconButton(
+              icon: const Icon(Icons.psychology),
+              tooltip: 'Recall practice',
+              onPressed: () {
+                final poems = di.get<PoemsScreenLogic>().selectedCategoryPoems.value;
+                if (poems.isEmpty) return;
+                di.get<RecallPracticeLogic>().start(poems);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RecallPracticeScreen()),
+                );
+              },
             ),
             // Random practice
             IconButton(
